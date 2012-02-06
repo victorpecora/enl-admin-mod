@@ -23,15 +23,9 @@ presentations = [
     (ti_on_presentation_load, [
       (presentation_set_duration, 999999),
       (set_fixed_point_multiplier, 1000),
-            
-      #Set version
-      (assign, "$enl_ver_major", enl_ver_major),
-      (assign, "$enl_ver_minor", enl_ver_minor),
       
-      (assign, reg0, "$enl_ver_major"),
-      (assign, reg1, "$enl_ver_minor"),
-      
-      (create_text_overlay, "$enl_version_display", "@v{reg0}.{reg1}"),
+      (call_script, "script_enl_version_to_s0"),
+      (create_text_overlay, "$enl_version_display", "str_s0"),
       (position_set_x, pos1, 900),
       (position_set_y, pos1, 0),
       (overlay_set_position, "$enl_version_display", pos1),
@@ -41,7 +35,7 @@ presentations = [
       (overlay_set_color, "$enl_version_display", 0xFFFFFF),
       
       #Do version check
-      (send_message_to_url, "@http://sarrdakin.com/enlversion"),
+      (send_message_to_url, "@http://enl-admin-mod.googlecode.com/files/enlversion"),
       
     ]),
   ]),
@@ -1872,7 +1866,15 @@ presentations = [
       (position_set_y, pos1, 1002),
       (overlay_set_size, reg0, pos1),
 
-      (assign, ":cur_y", 1240+5*40), #ENL - was 1240, need space for the 5 items I added
+      #ENL - Begin
+      (try_begin),
+        (eq, "$enl_public_mode", 0),
+        (assign, ":cur_y", 1240+4*40), # need space for the 4 extra items in private mode
+      (else_try),
+        (assign, ":cur_y", 1240+3*40), # need space for the 3 extra items in public mode
+      (try_end),
+      #(assign, ":cur_y", 1240),
+      #ENL - End
       (assign, ":cur_y_adder", 40),
 
       (try_begin),
@@ -1942,8 +1944,7 @@ presentations = [
       (val_sub, ":cur_y", ":cur_y_adder"),
       
       #ENL - Begin
-      (assign, reg1, "$enl_public_mode"),
-      (create_text_overlay, reg0, "@{reg1?Public:Private} mode", 0), #ENL
+      (create_text_overlay, reg0, "@Public mode", 0),
       (position_set_x, pos1, 30),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, reg0, pos1),
@@ -1953,85 +1954,185 @@ presentations = [
       (store_add, ":special_cur_y", ":cur_y", 7),
       (position_set_y, pos1, ":special_cur_y"),
       (overlay_set_position, "$enl_public_mode_checkbox", pos1),
-      
       (overlay_set_val, "$enl_public_mode_checkbox", "$enl_public_mode"),
       
-      (val_sub, ":cur_y", ":cur_y_adder"),
-      
-      (create_text_overlay, reg0, "@Server announcements every", 0),
-      (position_set_x, pos1, 30+30),
+      (create_text_overlay, reg0, "@Private mode", 0),
+      (position_set_x, pos1, 350),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, reg0, pos1),
-      (overlay_set_color, reg0, 0x000000),
-      (try_begin),
-        (eq, "$enl_public_mode", 0),
-        (overlay_set_color, reg0, 0x555555),
-      (try_end),
       
-      (create_check_box_overlay, "$enl_announcement_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
-      (position_set_x, pos1, 7+30),
-      (store_add, ":special_cur_y", ":cur_y", 7),
+      (create_check_box_overlay, "$enl_private_mode_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+      (position_set_x, pos1, 327),
       (position_set_y, pos1, ":special_cur_y"),
-      (overlay_set_position, "$enl_announcement_enabled_checkbox", pos1),
-      (overlay_set_val, "$enl_announcement_enabled_checkbox", "$enl_announcement_enabled"),
+      (overlay_set_position, "$enl_private_mode_checkbox", pos1),
+      (assign, reg1, "$enl_public_mode"),
+      (val_add, reg1, 1),
+      (val_mod, reg1, 2),
+      (overlay_set_val, "$enl_private_mode_checkbox", reg1),
       
-      (create_number_box_overlay, "$enl_announcement_interval_numberbox", 60, 3600),
-      (position_set_x, pos1, 390),
-      (position_set_y, pos1, ":cur_y"),
-      (overlay_set_position, "$enl_announcement_interval_numberbox", pos1),
-      (overlay_set_val, "$enl_announcement_interval_numberbox", "$enl_announcement_interval"),
-      
-      (create_text_overlay, reg0, "@seconds", 0),
-      (position_set_x, pos1, 390+65),
-      (position_set_y, pos1, ":cur_y"),
-      (overlay_set_position, reg0, pos1),
-      (overlay_set_color, reg0, 0x000000),
-      (try_begin),
-        (eq, "$enl_public_mode", 0),
-        (overlay_set_color, reg0, 0x555555),
-      (try_end),
       
       (val_sub, ":cur_y", ":cur_y_adder"),
       
-      (create_text_overlay, reg0, "@Kill stray horses", 0),
-      (position_set_x, pos1, 30+30),
-      (position_set_y, pos1, ":cur_y"),
-      (overlay_set_position, reg0, pos1),
-      (overlay_set_color, reg0, 0x000000),
+      (assign, "$enl_announcement_enabled_checkbox", -1),
+      (assign, "$enl_announcement_interval_numberbox", -1),
+      (assign, "$enl_strayhorse_enabled_checkbox", -1),
+      (assign, "$enl_autokickban_enabled_checkbox", -1),
       (try_begin),
-        (eq, "$enl_public_mode", 0),
-        (overlay_set_color, reg0, 0x555555),
-      (try_end),
-      
-      (create_check_box_overlay, "$enl_strayhorse_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
-      (position_set_x, pos1, 7+30),
-      (store_add, ":special_cur_y", ":cur_y", 7),
-      (position_set_y, pos1, ":special_cur_y"),
-      (overlay_set_position, "$enl_strayhorse_enabled_checkbox", pos1),
-      (overlay_set_val, "$enl_strayhorse_enabled_checkbox", "$enl_strayhorse_enabled"),
-      
-      (val_sub, ":cur_y", ":cur_y_adder"),
-      
-      (create_text_overlay, reg0, "@Auto kick/ban", 0),
-      (position_set_x, pos1, 30+30),
-      (position_set_y, pos1, ":cur_y"),
-      (overlay_set_position, reg0, pos1),
-      (overlay_set_color, reg0, 0x000000),
-      (try_begin),
-        (eq, "$enl_public_mode", 0),
-        (overlay_set_color, reg0, 0x555555),
-      (try_end),
-      
-      (create_check_box_overlay, "$enl_autokickban_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
-      (position_set_x, pos1, 7+30),
-      (store_add, ":special_cur_y", ":cur_y", 7),
-      (position_set_y, pos1, ":special_cur_y"),
-      (overlay_set_position, "$enl_autokickban_enabled_checkbox", pos1),
-      (overlay_set_val, "$enl_autokickban_enabled_checkbox", "$enl_autokickban_enabled"),
-      
-      #ENL - End
+        (eq, "$enl_public_mode", 1),
+        
+        (create_text_overlay, reg0, "@Server announcements every", 0),
+        (position_set_x, pos1, 30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        (overlay_set_color, reg0, 0x000000),
+        
+        (create_check_box_overlay, "$enl_announcement_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_announcement_enabled_checkbox", pos1),
+        (overlay_set_val, "$enl_announcement_enabled_checkbox", "$enl_announcement_enabled"),
+        
+        (create_number_box_overlay, "$enl_announcement_interval_numberbox", 60, 3600),
+        (position_set_x, pos1, 390),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, "$enl_announcement_interval_numberbox", pos1),
+        (overlay_set_val, "$enl_announcement_interval_numberbox", "$enl_announcement_interval"),
+        
+        (create_text_overlay, reg0, "@seconds", 0),
+        (position_set_x, pos1, 390+65),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        (overlay_set_color, reg0, 0x000000),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
 
-      (val_sub, ":cur_y", ":cur_y_adder"),
+        
+        (create_text_overlay, reg0, "@Kill stray horses", 0),
+        (position_set_x, pos1, 30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        (overlay_set_color, reg0, 0x000000),
+      
+        (create_check_box_overlay, "$enl_strayhorse_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_strayhorse_enabled_checkbox", pos1),
+        (overlay_set_val, "$enl_strayhorse_enabled_checkbox", "$enl_strayhorse_enabled"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+
+        
+        (create_text_overlay, reg0, "@Auto kick/ban", 0),
+        (position_set_x, pos1, 30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        (overlay_set_color, reg0, 0x000000),
+                
+        (create_check_box_overlay, "$enl_autokickban_enabled_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_autokickban_enabled_checkbox", pos1),
+        (overlay_set_val, "$enl_autokickban_enabled_checkbox", "$enl_autokickban_enabled"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+      (try_end),
+       
+
+      (assign, "$enl_class_limits_checkbox", -1),
+      (assign, "$enl_classlimit_infantry_checkbox", -1),
+      (assign, "$enl_classlimit_infantry_numberbox", -1),
+      (assign, "$enl_classlimit_ranged_checkbox", -1),
+      (assign, "$enl_classlimit_ranged_numberbox", -1),
+      (assign, "$enl_classlimit_cavalry_checkbox", -1),
+      (assign, "$enl_classlimit_cavalry_numberbox", -1),
+      (try_begin),
+        (eq, "$enl_public_mode", 0),
+        
+        (create_text_overlay, reg0, "@Class limits", 0),
+        (position_set_x, pos1, 30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        
+        (create_check_box_overlay, "$enl_class_limits_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_class_limits_checkbox", pos1),
+        (store_or, ":limits", "$enl_classlimit_infantry_enabled", "$enl_classlimit_ranged_enabled"),
+        (val_or, ":limits", "$enl_classlimit_cavalry_enabled"),
+        (overlay_set_val, "$enl_class_limits_checkbox", ":limits"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+      
+      
+        (create_text_overlay, reg0, "@Maximum infantry"),
+        (position_set_x, pos1, 30+30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        
+        (create_check_box_overlay, "$enl_classlimit_infantry_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_classlimit_infantry_checkbox", pos1),
+        (overlay_set_val, "$enl_classlimit_infantry_checkbox", "$enl_classlimit_infantry_enabled"),
+        
+        
+        (create_number_box_overlay, "$enl_classlimit_infantry_numberbox", 0, 256),
+        (position_set_x, pos1, 390),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, "$enl_classlimit_infantry_numberbox", pos1),
+        (overlay_set_val, "$enl_classlimit_infantry_numberbox", "$enl_classlimit_infantry"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+      
+      
+        (create_text_overlay, reg0, "@Maximum ranged"),
+        (position_set_x, pos1, 30+30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        
+        (create_check_box_overlay, "$enl_classlimit_ranged_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_classlimit_ranged_checkbox", pos1),
+        (overlay_set_val, "$enl_classlimit_ranged_checkbox", "$enl_classlimit_ranged_enabled"),
+        
+        
+        (create_number_box_overlay, "$enl_classlimit_ranged_numberbox", 0, 256),
+        (position_set_x, pos1, 390),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, "$enl_classlimit_ranged_numberbox", pos1),
+        (overlay_set_val, "$enl_classlimit_ranged_numberbox", "$enl_classlimit_ranged"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+        
+        (create_text_overlay, reg0, "@Maximum cavalry"),
+        (position_set_x, pos1, 30+30+30),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, reg0, pos1),
+        
+        (create_check_box_overlay, "$enl_classlimit_cavalry_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (position_set_x, pos1, 7+30+30),
+        (store_add, ":special_cur_y", ":cur_y", 7),
+        (position_set_y, pos1, ":special_cur_y"),
+        (overlay_set_position, "$enl_classlimit_cavalry_checkbox", pos1),
+        (overlay_set_val, "$enl_classlimit_cavalry_checkbox", "$enl_classlimit_cavalry_enabled"),
+        
+        
+        (create_number_box_overlay, "$enl_classlimit_cavalry_numberbox", 0, 256),
+        (position_set_x, pos1, 390),
+        (position_set_y, pos1, ":cur_y"),
+        (overlay_set_position, "$enl_classlimit_cavalry_numberbox", pos1),
+        (overlay_set_val, "$enl_classlimit_cavalry_numberbox", "$enl_classlimit_cavalry"),
+        
+        (val_sub, ":cur_y", ":cur_y_adder"),
+      (try_end),
+      #ENL - End
 
       (create_text_overlay, reg0, "str_server_name", 0),
       (position_set_x, pos1, 0),
@@ -2778,6 +2879,29 @@ presentations = [
         # (multiplayer_send_int_to_server, multiplayer_event_enl_server_common, enl_event_restart_map),
         # (presentation_set_duration, 0),
       # (else_try),
+        (eq, ":object", "$enl_class_limits_checkbox"),
+        (val_add, ":value", 1),
+        (val_mod, ":value", 2),
+        (overlay_set_val, "$enl_class_limits_checkbox", ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_infantry_checkbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_classlimits, enl_class_infantry, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_infantry_numberbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_set_classlimits, enl_class_infantry, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_ranged_checkbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_classlimits, enl_class_ranged, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_ranged_numberbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_set_classlimits, enl_class_ranged, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_cavalry_checkbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_classlimits, enl_class_cavalry, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_classlimit_cavalry_numberbox"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_set_classlimits, enl_class_cavalry, ":value"),
+      (else_try),
         (eq, ":object", "$enl_announcement_enabled_checkbox"),
         (multiplayer_send_2_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_announcements, ":value"),
       (else_try),
@@ -2946,6 +3070,11 @@ presentations = [
       #ENL - Begin
       (else_try),
         (eq, ":object", "$enl_public_mode_checkbox"),
+        (multiplayer_send_2_int_to_server, multiplayer_event_enl_server_common, enl_event_set_public_mode, ":value"),
+      (else_try),
+        (eq, ":object", "$enl_private_mode_checkbox"),
+        (val_add, ":value", 1),
+        (val_mod, ":value", 2),
         (multiplayer_send_2_int_to_server, multiplayer_event_enl_server_common, enl_event_set_public_mode, ":value"),
       #ENL
       (try_end),

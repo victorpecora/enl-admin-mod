@@ -969,7 +969,8 @@ slot_player_spawn_count                        = 39
 
 #ENL - Begin
 slot_player_is_streamer                        = 40
-slot_player_teamkills                          = 41  
+slot_player_teamkills                          = 41
+slot_player_has_limited_class                  = 42
 #ENL - End
 ########################################################
 ##  TEAM SLOTS             #############################
@@ -1805,7 +1806,7 @@ ACHIEVEMENT_LADY_OF_THE_LAKE = 80,
 
 #ENL constants
 enl_ver_major = 2
-enl_ver_minor = 2
+enl_ver_minor = 3
 
 enl_max_teamkills = 3
 enl_button_height = 25

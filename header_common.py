@@ -613,4 +613,11 @@ enl_event_teleport_player         = 8 #S  2 player player
 enl_event_swap_player             = 9 #S  2 player team_or_spec
 enl_event_temporary_ban           = 10 #S 1 player
 enl_event_kick_all                = 11 #S 0
-enl_event_set_public_mode        = 12 #SC 1 value
+enl_event_set_public_mode         = 12 #SC 1 value
+enl_event_set_classlimits         = 13 #SC 2 class value
+enl_event_toggle_classlimits      = 14 #SC 2 class value
+
+# Class limits
+enl_class_infantry                = 0
+enl_class_ranged                  = 1
+enl_class_cavalry                 = 2

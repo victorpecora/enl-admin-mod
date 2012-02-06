@@ -576,6 +576,10 @@ script_enl_mass_mute = 574
 script_enl_distance_between_players = 575
 script_enl_sync_teamkiller_to_all_admins = 576
 script_cf_enl_player_not_streamer = 577
-script_enl_init = 578
+script_cf_enl_check_troop_available = 578
+script_enl_get_class_count_for_team = 579
+script_enl_get_player_class = 580
+script_enl_init = 581
+script_enl_version_to_s0 = 582
 
 

@@ -896,6 +896,7 @@ scripts = [
       (try_for_range, ":party_no", centers_begin, centers_end),
         (party_set_note_available, ":party_no", 1),
       (try_end),
+
     ]),
 
   #script_game_get_use_string
@@ -7978,6 +7979,22 @@ scripts = [
          (player_get_score, ":killer_agent_player_score", ":killer_agent_player_id"),
          (val_add, ":killer_agent_player_score", -1),
          (player_set_score, ":killer_agent_player_id", ":killer_agent_player_score"),
+         #ENL - Begin
+         (str_store_player_username, s1, ":killer_agent_player_id"),
+         (agent_get_player_id, ":dead_agent_player_id", ":dead_agent_no"),
+         (try_begin),
+           (eq, "$enl_public_mode", 1),
+           (neq, "$g_multiplayer_game_type", multiplayer_game_type_duel),
+           (neq, "$g_multiplayer_game_type", multiplayer_game_type_deathmatch),
+           (neq, ":killer_agent_player_id", ":dead_agent_player_id"),
+           (str_store_player_username, s2, ":dead_agent_player_id"),
+           (str_store_string, s0, "@{s1} has teamkilled {s2}."),
+           (call_script, "script_enl_broadcast_message_s0", 0),
+           (str_store_string, s0, "@{s1} has killed a teammate."),
+           (server_add_message_to_log, "str_s0"),
+         (try_end),
+         #ENL - End
+         
          #(player_get_kill_count, ":killer_agent_player_kill_count", ":killer_agent_player_id"),
          #(val_add, ":killer_agent_player_kill_count", -2),
          #(player_set_kill_count, ":killer_agent_player_id", ":killer_agent_player_kill_count"),
@@ -8972,14 +8989,14 @@ scripts = [
   # reg0, reg1, reg2, ... up to 128 registers contain the integer values
   # s0, s1, s2, ... up to 128 strings contain the string values
   ("game_receive_url_response", [
+    (store_script_param, ":num_integers", 1),
+    (store_script_param, ":num_strings", 2),
     (try_begin),
-      (store_script_param, ":num_integers", 1),
-      (store_script_param, ":num_strings", 2),
-      
       (eq, ":num_strings", 0),
       (eq, ":num_integers", 2),
-      (assign, reg2, "$enl_ver_major"),
-      (assign, reg3, "$enl_ver_minor"),
+      
+      (assign, reg2, enl_ver_major),
+      (assign, reg3, enl_ver_minor),
       
       (store_mul, ":cur_version", reg0, 10),
       (val_add, ":cur_version", reg1),
@@ -9001,6 +9018,10 @@ scripts = [
       (display_message, "str_s0"),
       (multiplayer_is_dedicated_server),
       (server_add_message_to_log, "str_s0"),
+    (else_try),
+      (eq, ":num_strings", 1),
+      (eq, ":num_integers", 0),
+      (display_message, "@^Error: Could not check for updates. "),
     (try_end),
   ]),
       
@@ -9084,6 +9105,9 @@ scripts = [
             #reset troop_id to -1
             (player_set_troop_id, ":player_no", -1),
             (player_set_team_no, ":player_no", ":value"),
+            
+            (player_set_slot, ":player_no", slot_player_has_limited_class, 0), #ENL
+            
             (try_begin),
               (neq, ":value", multi_team_spectator),
               (neq, ":value", multi_team_unassigned),
@@ -9112,8 +9136,24 @@ scripts = [
           (team_get_faction, ":team_faction", ":player_team"),
           (store_troop_faction, ":new_troop_faction", ":value"),
           (eq, ":new_troop_faction", ":team_faction"),
-          (player_set_troop_id, ":player_no", ":value"),
-          (call_script, "script_multiplayer_clear_player_selected_items", ":player_no"),
+          #ENL - Begin
+          (try_begin),
+            (call_script, "script_cf_enl_check_troop_available", ":value", ":player_team"),
+            (player_set_slot, ":player_no", slot_player_has_limited_class, 0),
+          #ENL - End
+            (player_set_troop_id, ":player_no", ":value"),
+            (call_script, "script_multiplayer_clear_player_selected_items", ":player_no"),
+          #ENL - Begin
+          (else_try),
+            (player_set_slot, ":player_no", slot_player_has_limited_class, 1),
+            (str_store_string, s0, "@You cannot pick that class."),
+            (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+            
+            (player_set_troop_id, ":player_no", -1),
+            (player_set_team_no, ":player_no", ":player_team"),
+            (multiplayer_send_message_to_player, ":player_no", multiplayer_event_force_start_team_selection),
+          (try_end),
+          #ENL - End
         (try_end),
       (else_try),
         (eq, ":event_type", multiplayer_event_admin_start_map),
@@ -9669,6 +9709,12 @@ scripts = [
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_announcement_interval, "$enl_announcement_interval"),
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_strayhorses, "$enl_strayhorse_enabled"),
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_autokickban, "$enl_autokickban_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_infantry, "$enl_classlimit_infantry"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_ranged, "$enl_classlimit_ranged"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_cavalry, "$enl_classlimit_cavalry"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_infantry, "$enl_classlimit_infantry_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_ranged, "$enl_classlimit_ranged_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_cavalry, "$enl_classlimit_cavalry_enabled"),
           (try_end),
           #ENL - End
           (server_get_friendly_fire, ":server_friendly_fire"),
@@ -9728,6 +9774,12 @@ scripts = [
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_announcement_interval, "$enl_announcement_interval"),
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_strayhorses, "$enl_strayhorse_enabled"),
             (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_autokickban, "$enl_autokickban_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_infantry, "$enl_classlimit_infantry"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_ranged, "$enl_classlimit_ranged"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_classlimits, enl_class_cavalry, "$enl_classlimit_cavalry"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_infantry, "$enl_classlimit_infantry_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_ranged, "$enl_classlimit_ranged_enabled"),
+            (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, enl_class_cavalry, "$enl_classlimit_cavalry_enabled"),
           (try_end),
           #ENL - End
           (server_get_friendly_fire, ":server_friendly_fire"),
@@ -10387,6 +10439,130 @@ scripts = [
           (str_store_string, s0, "@[SETTING]: Server announcements {reg0?enabled:disabled} by {s0}."),
           (call_script, "script_enl_broadcast_message_s0", 1),
         (else_try),
+          (eq, ":event_subtype", enl_event_toggle_classlimits),
+          (store_script_param, ":type", 4),
+          (store_script_param, reg0, 5),
+          (is_between, reg0, 0, 2),
+          
+          (try_begin),
+            (eq, ":type", enl_class_infantry),
+            (assign, "$enl_classlimit_infantry_enabled", reg0),
+          (else_try),
+            (eq, ":type", enl_class_ranged),
+            (assign, "$enl_classlimit_ranged_enabled", reg0),
+          (else_try),
+            (eq, ":type", enl_class_cavalry),
+            (assign, "$enl_classlimit_cavalry_enabled", reg0),
+          (try_end),
+          
+          (get_max_players, ":max_players"),
+          (try_for_range, ":cur_player", 0, ":max_players"),
+            (player_is_active, ":cur_player"),
+            (player_is_admin, ":cur_player"),
+            (multiplayer_send_3_int_to_player, ":cur_player", multiplayer_event_enl_client_common, enl_event_toggle_classlimits, ":type", reg0),
+          (try_end),
+          
+          (str_store_player_username, s0, ":player_no"),
+          (try_begin),
+            (eq, "$enl_classlimit_infantry_enabled", 0),
+            (eq, "$enl_classlimit_ranged_enabled", 0),
+            (eq, "$enl_classlimit_cavalry_enabled", 0),
+            (str_store_string, s1, "@Class limits disabled"),
+          (else_try),
+            (str_store_string, s1, "@Class limits set to"),
+            (try_begin),
+              (eq, "$enl_classlimit_infantry_enabled", 1),
+              (assign, reg0, "$enl_classlimit_infantry_enabled"),
+              (assign, reg1, "$enl_classlimit_infantry"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} infantry:}"),
+            (try_end),
+            (try_begin),
+              (eq, "$enl_classlimit_ranged_enabled", 1),
+              (try_begin),
+                (eq, "$enl_classlimit_infantry_enabled", 1),
+                (str_store_string, s1, "@{s1}, "),
+              (try_end),
+              (assign, reg0, "$enl_classlimit_ranged_enabled"),
+              (assign, reg1, "$enl_classlimit_ranged"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} ranged:}"),
+            (try_end),
+            (try_begin),
+              (eq, "$enl_classlimit_cavalry_enabled", 1),
+              (try_begin),
+                (this_or_next|eq, "$enl_classlimit_infantry_enabled", 1),
+                (eq, "$enl_classlimit_ranged_enabled", 1),
+                (str_store_string, s1, "@{s1}, "),
+              (try_end),
+              (assign, reg0, "$enl_classlimit_cavalry_enabled"),
+              (assign, reg1, "$enl_classlimit_cavalry"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} cavalry:}"),
+            (try_end),
+          (try_end),
+          
+          (str_store_string, s0, "@[SETTING]: {s1} by {s0}"),
+          (call_script, "script_enl_broadcast_message_s0", 1),
+        (else_try),
+          (eq, ":event_subtype", enl_event_set_classlimits),
+          (store_script_param, ":type", 4),
+          (store_script_param, reg1, 5),
+          (is_between, reg1, 0, 256),
+          (try_begin),
+            (eq, ":type", enl_class_infantry),
+            (assign, "$enl_classlimit_infantry", reg1),
+          (else_try),
+            (eq, ":type", enl_class_ranged),
+            (assign, "$enl_classlimit_ranged", reg1),
+          (else_try),
+            (eq, ":type", enl_class_cavalry),
+            (assign, "$enl_classlimit_cavalry", reg1),
+          (try_end),
+          
+          (get_max_players, ":max_players"),
+          (try_for_range, ":cur_player", 0, ":max_players"),
+            (player_is_active, ":cur_player"),
+            (player_is_admin, ":cur_player"),
+            (multiplayer_send_3_int_to_player, ":cur_player", multiplayer_event_enl_client_common, enl_event_set_classlimits, ":type", reg1),
+          (try_end),
+          
+          (str_store_player_username, s0, ":player_no"),
+          (try_begin),
+            (eq, "$enl_classlimit_infantry_enabled", 0),
+            (eq, "$enl_classlimit_ranged_enabled", 0),
+            (eq, "$enl_classlimit_cavalry_enabled", 0),
+            (str_store_string, s1, "@Class limits disabled"),
+          (else_try),
+            (str_store_string, s1, "@Class limits set to"),
+            (try_begin),
+              (eq, "$enl_classlimit_infantry_enabled", 1),
+              (assign, reg0, "$enl_classlimit_infantry_enabled"),
+              (assign, reg1, "$enl_classlimit_infantry"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} infantry:}"),
+            (try_end),
+            (try_begin),
+              (eq, "$enl_classlimit_ranged_enabled", 1),
+              (try_begin),
+                (eq, "$enl_classlimit_infantry_enabled", 1),
+                (str_store_string, s1, "@{s1}, "),
+              (try_end),
+              (assign, reg0, "$enl_classlimit_ranged_enabled"),
+              (assign, reg1, "$enl_classlimit_ranged"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} ranged:}"),
+            (try_end),
+            (try_begin),
+              (eq, "$enl_classlimit_cavalry_enabled", 1),
+              (try_begin),
+                (this_or_next|eq, "$enl_classlimit_infantry_enabled", 1),
+                (eq, "$enl_classlimit_ranged_enabled", 1),
+                (str_store_string, s1, "@{s1}, "),
+              (try_end),
+              (assign, reg0, "$enl_classlimit_cavalry_enabled"),
+              (assign, reg1, "$enl_classlimit_cavalry"),
+              (str_store_string, s1, "@{s1} {reg0?{reg1?{reg1}:no} cavalry:}"),
+            (try_end),
+          (try_end),
+          (str_store_string, s0, "@[SETTING]: {s1} by {s0}"),
+          (call_script, "script_enl_broadcast_message_s0", 1),
+        (else_try),
           (eq, ":event_subtype", enl_event_announcement_interval),
           (store_script_param, ":value", 4),
           (assign, "$enl_announcement_interval", ":value"),
@@ -11037,6 +11213,41 @@ scripts = [
           (try_begin),
             (eq, ":event_subtype", enl_event_toggle_announcements),
             (store_script_param, "$enl_announcement_enabled", 4),
+          (else_try),
+            (eq, ":event_subtype", enl_event_toggle_classlimits),
+            (store_script_param, ":type", 4),
+            (store_script_param, ":enabled", 5),
+            (is_between, ":enabled", 0, 2),
+            (try_begin),
+              (eq, ":type", enl_class_infantry),
+              (assign, "$enl_classlimit_infantry_enabled", ":enabled"),
+            (else_try),
+              (eq, ":type", enl_class_ranged),
+              (assign, "$enl_classlimit_ranged_enabled", ":enabled"),
+            (else_try),
+              (eq, ":type", enl_class_cavalry),
+              (assign, "$enl_classlimit_cavalry_enabled", ":enabled"),
+            (try_end),
+            
+            (try_begin),
+              (is_presentation_active, "prsnt_game_multiplayer_admin_panel"),
+              (assign, "$enl_restart_admin_panel", 1),
+            (try_end),
+          (else_try),
+            (eq, ":event_subtype", enl_event_set_classlimits),
+            (store_script_param, ":type", 4),
+            (store_script_param, ":limit", 5),
+            (is_between, ":limit", 0, 256),
+            (try_begin),
+              (eq, ":type", enl_class_infantry),
+              (assign, "$enl_classlimit_infantry", ":limit"),
+            (else_try),
+              (eq, ":type", enl_class_ranged),
+              (assign, "$enl_classlimit_ranged", ":limit"),
+            (else_try),
+              (eq, ":type", enl_class_cavalry),
+              (assign, "$enl_classlimit_cavalry", ":limit"),
+            (try_end),
           (else_try),
             (eq, ":event_subtype", enl_event_announcement_interval),
             (store_script_param, "$enl_announcement_interval", 4),
@@ -48598,32 +48809,137 @@ scripts = [
     (eq, ":result", 0),
   ]),
   
-  # script_enl_init
-  ("enl_init",[
+  # script_cf_enl_check_troop_available
+  # Input: arg1 = troop_id, arg2 = team_no
+  # Output: none (can fail)
+  ("cf_enl_check_troop_available", [
+    (assign, ":available", 1),
     (try_begin),
-      #Set version
-      (assign, "$enl_ver_major", enl_ver_major),
-      (assign, "$enl_ver_minor", enl_ver_minor),
-    
-      #Public mode init
-      (server_get_anti_cheat, "$enl_public_mode"),
-      (server_set_anti_cheat, 0),
-    
-      #Defaults
-      (assign, "$enl_last_disconnected_uniqueid", -1), #Should fix disconnect spam
-      (assign, "$enl_announcement_time", 0),
-      (assign, "$enl_announcement_interval", 300), #5 minutes
-      (assign, "$enl_announcement_current", 0),
-      (assign, "$enl_announcement_enabled", 1),
-      (assign, "$enl_strayhorse_enabled", 0),
-      (assign, "$enl_autokickban_enabled", 0),
+      (eq, "$enl_public_mode", 0),
+      (assign, ":available", 0),
+      (store_script_param_1, ":troop_id"),
+      (store_script_param_2, ":team_no"),
+      (call_script, "script_enl_get_player_class", ":troop_id"), (assign, ":class", reg0),
+      (neq, ":class", -1),
       
-      (assign, "$enl_swap_team_or_spec", 0),
-      (assign, "$enl_teleport_to_me_or_to_player", 0), 
-      (assign, "$enl_ban_permanently_or_temporarily", 0),
+      (call_script, "script_enl_get_class_count_for_team", ":team_no", ":class"), (assign, ":count", reg0),
+      
+      (assign, ":available", 1),
+      (try_begin),
+        (eq, ":class", enl_class_infantry),
+        (eq, "$enl_classlimit_infantry_enabled", 1),
+        (ge, ":count", "$enl_classlimit_infantry"),
+        (assign, ":available", 0),
+      (else_try),
+        (eq, ":class", enl_class_ranged),
+        (eq, "$enl_classlimit_ranged_enabled", 1),
+        (ge, ":count", "$enl_classlimit_ranged"),
+        (assign, ":available", 0),
+      (else_try),
+        (eq, ":class", enl_class_cavalry),
+        (eq, "$enl_classlimit_cavalry_enabled", 1),
+        (ge, ":count", "$enl_classlimit_cavalry"),
+        (assign, ":available", 0),
+      (try_end),
     (try_end),
+    (eq, ":available", 1),
+  ]),
+  
+  # script_enl_get_class_count_for_team
+  # Input: arg1 = team_no, arg2 = enl class
+  # Output: reg0 = count
+  ("enl_get_class_count_for_team", [
+    (store_script_param_1, ":team_no"),
+    (store_script_param_2, ":class"),
+    
+    (assign, ":count", 0),
+    (get_max_players, ":max_players"),
+    (try_for_range, ":cur_player", 1, ":max_players"),
+      (player_is_active, ":cur_player"),
+      (player_get_team_no, ":cur_team_no", ":cur_player"),
+      (eq, ":cur_team_no", ":team_no"),
+      (player_get_troop_id, ":cur_troop_id", ":cur_player"),
+      (neq, ":cur_troop_id", -1),
+      (call_script, "script_enl_get_player_class", ":cur_troop_id"),
+      (eq, ":class", reg0),
+      (val_add, ":count", 1),
+    (try_end),
+    (assign, reg0, ":count"),
+  ]),
+
+  # script_enl_get_player_class
+  # Input: troop_id
+  # Output: reg0 = ENL player class
+  ("enl_get_player_class", [
+    (store_script_param_1, ":troop_id"),
+    (assign, ":class", -1),
+    (try_begin),
+      (this_or_next|eq, ":troop_id", "trp_swadian_infantry_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_vaegir_spearman_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_nord_veteran_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_rhodok_sergeant_multiplayer"),
+      (eq, ":troop_id", "trp_sarranid_footman_multiplayer"),
+      (assign, ":class", enl_class_infantry),
+    (else_try),
+      (this_or_next|eq, ":troop_id", "trp_swadian_crossbowman_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_vaegir_archer_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_khergit_veteran_horse_archer_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_nord_archer_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_rhodok_veteran_crossbowman_multiplayer"),
+      (eq, ":troop_id", "trp_sarranid_archer_multiplayer"),
+      (assign, ":class", enl_class_ranged),
+    (else_try),
+      (this_or_next|eq, ":troop_id", "trp_swadian_man_at_arms_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_vaegir_horseman_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_khergit_lancer_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_nord_scout_multiplayer"),
+      (this_or_next|eq, ":troop_id", "trp_rhodok_horseman_multiplayer"),
+      (eq, ":troop_id", "trp_sarranid_mamluke_multiplayer"),
+      (assign, ":class", enl_class_cavalry),
+    (try_end),
+    (assign, reg0, ":class"),
+  ]),
+  
+  # script_enl_init
+  ("enl_init", [
+    #Public mode init
+    (server_get_anti_cheat, "$enl_public_mode"),
+    (server_set_anti_cheat, 0),
+  
+    #Defaults
+    (assign, "$enl_saved_version_to_log", 0),
+    
+    (assign, "$enl_last_disconnected_uniqueid", -1), #Should fix disconnect spam
+    (assign, "$enl_announcement_time", 0),
+    (assign, "$enl_announcement_interval", 300), #5 minutes
+    (assign, "$enl_announcement_current", 0),
+    (assign, "$enl_announcement_enabled", 1),
+    (assign, "$enl_strayhorse_enabled", 0),
+    (assign, "$enl_autokickban_enabled", 0),
+    
+    (assign, "$enl_classlimit_infantry_enabled", 0),
+    (assign, "$enl_classlimit_infantry", 4),
+    (assign, "$enl_classlimit_ranged_enabled", 0),
+    (assign, "$enl_classlimit_ranged", 4),
+    (assign, "$enl_classlimit_cavalry_enabled", 0),
+    (assign, "$enl_classlimit_cavalry", 4),
+    
+    (assign, "$enl_swap_team_or_spec", 0),
+    (assign, "$enl_teleport_to_me_or_to_player", 0), 
+    (assign, "$enl_ban_permanently_or_temporarily", 0),
+
+  ]),
+  
+  # script_enl_version_to_s0
+  # Input: none
+  # Output: Saves the string "v{reg0}.{reg1}" to string register 0.
+  ("enl_version_to_s0", [
+    (assign, reg0, enl_ver_major),
+    (assign, reg1, enl_ver_minor),
+    
+    (str_store_string, s0, "str_enl_version"),
   ]),
   
   #ENL - End
-
+  
 ]

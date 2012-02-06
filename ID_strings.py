@@ -3228,6 +3228,9 @@ str_enl_announcement_1 = 3226
 str_enl_announcement_2 = 3227
 str_enl_announcement_3 = 3228
 str_enl_announcement_4 = 3229
-str_enl_announcements_end = 3230
+str_enl_announcement_5 = 3230
+str_enl_announcements_end = 3231
+str_enl_version = 3232
+str_enl_module = 3233
 
 

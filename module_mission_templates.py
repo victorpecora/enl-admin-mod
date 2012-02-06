@@ -69,23 +69,25 @@ enl_player_leave = (
 	    (player_get_unique_id, ":unique_id", ":player_no"),
 	    (neq, ":unique_id", "$enl_last_disconnected_uniqueid"), 
 	    (assign, "$enl_last_disconnected_uniqueid", ":unique_id"),
+  
+      (str_store_player_username, s1, ":player_no"),
+      (str_store_string, s0, "@{s1} has left the game."),
+      (call_script, "script_enl_broadcast_message_s0", 1), 
     (try_end),
-    (str_store_player_username, s1, ":player_no"),
-    (str_store_string, s0, "@{s1} has left the game."),
-    (call_script, "script_enl_broadcast_message_s0", 1), 
   ])
 
 enl_player_join = (
   ti_server_player_joined, 0, 0, [(multiplayer_is_server),],[
     (store_trigger_param_1, ":player_no"),
+    (gt, ":player_no", 0),
+    (player_get_unique_id, ":unique_id", ":player_no"),
     (try_begin),
       #prevent ti_on_player_exit spam
-      (player_get_unique_id, ":unique_id", ":player_no"),
       (eq, ":unique_id", "$enl_last_disconnected_uniqueid"),
       (assign, "$enl_last_disconnected_uniqueid", -1),
     (try_end),
     (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"),
-    (player_get_unique_id, reg0, ":player_no"),
+    (assign, reg0, ":unique_id"),
     (str_store_player_username, s1, ":player_no"),
     (str_clear, s2),
     (try_begin),
@@ -96,10 +98,16 @@ enl_player_join = (
     (str_store_string, s0, "@{s1} has joined{reg1?: with ID {reg0}{s2}}."),
     (call_script, "script_enl_broadcast_message_s0", 0), 
     
+    
     (store_current_scene, ":scene"),
     (call_script, "script_game_get_scene_name", ":scene"),
-    (str_store_string, s0, "@Welcome {s1}. The current map is {s0}.^This server is using ENL mod and is in {reg1?public:private} mode."),
+    (str_store_string, s0, "@The current map is {s0}. The server is in {reg1?public:private} mode."),
     (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+    
+    (call_script, "script_enl_version_to_s0"),
+    (str_store_string, s0, "@This server is using ENL Admin Module {s0}"),
+    (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+    
     
     (get_max_players, ":max_players"),
     (try_for_range, ":cur_player", 0, ":max_players"),
@@ -112,9 +120,10 @@ enl_player_join = (
 enl_public_announcement_map = (
   2.5, 0, ti_once, [
     (multiplayer_is_server),
-    (store_mission_timer_a, ":cur_time"),
-    (store_div, ":half_time", "$g_multiplayer_round_max_seconds", 2),
-    (gt, ":cur_time", ":half_time"),
+    (store_mission_timer_a, ":round_time"),
+    (val_sub, ":round_time", "$g_round_start_time"),
+    (store_div, ":half_round_time", "$g_multiplayer_round_max_seconds", 2),
+    (gt, ":round_time", ":half_round_time"),
   ],[
     (store_current_scene, ":scene"),
     (call_script, "script_game_get_scene_name", ":scene"),
@@ -218,6 +227,7 @@ enl_public_autokickban = [
     (store_trigger_param_1, ":dead_agent_no"),
     (store_trigger_param_2, ":killer_agent_no"),
     (try_begin), #killing teammate
+      (neq, ":killer_agent_no", ":dead_agent_no"),
       (ge, ":killer_agent_no", 0),
       (ge, ":dead_agent_no", 0),
       (agent_get_team, ":killer_team_no", ":killer_agent_no"),
@@ -255,10 +265,27 @@ enl_public_autokickban = [
       (try_end),
     (try_end),
   ]),
+  
+  
 ]
   
+enl_class_limit_notify = (10, 0, 0, [
+  (eq, "$enl_public_mode", 0),
+  (this_or_next|eq, "$enl_classlimit_infantry_enabled", 1),
+  (this_or_next|eq, "$enl_classlimit_ranged_enabled", 1),
+  (eq, "$enl_classlimit_cavalry_enabled", 1),
+], [
+  (get_max_players, ":max_players"),
+  (try_for_range, ":cur_player", 0, ":max_players"),
+    (player_is_active, ":cur_player"),
+    (player_slot_eq, ":cur_player", slot_player_has_limited_class, 1),
+    (str_store_string, s0, "@You cannot pick that class."),
+    (multiplayer_send_string_to_player, ":cur_player", multiplayer_event_show_server_message, s0),
+  (try_end),
+])
   
-enl_triggers = [enl_admin_chat, enl_player_join, enl_player_leave, enl_public_announcements, enl_public_announcement_map]
+enl_triggers = [enl_admin_chat, enl_player_join, enl_player_leave, enl_public_announcements,
+ enl_public_announcement_map, enl_class_limit_notify]
 enl_triggers += enl_public_autokickban
 enl_triggers += enl_public_kill_strayhorses
 #ENL - End
@@ -850,6 +877,18 @@ multiplayer_once_at_the_first_frame = (
   0, 0, ti_once, [], [
     (start_presentation, "prsnt_multiplayer_welcome_message"),
     (assign, "$enl_last_disconnected_uniqueid", -1), #ENL
+    
+    # Print version to log
+    (multiplayer_is_server), 
+    (eq, "$enl_saved_version_to_log", 0),
+    (assign, "$enl_saved_version_to_log", 1),
+
+    (call_script, "script_enl_version_to_s0"),
+    (str_store_string, s0, "@Running ENL Admin Module {s0}"),
+    (server_add_message_to_log, "str_empty_string"),
+    (server_add_message_to_log, "str_s0"),
+    (server_add_message_to_log, "str_empty_string"),
+    (display_message, "str_s0"),
     ])
 
 multiplayer_battle_window_opened = (
