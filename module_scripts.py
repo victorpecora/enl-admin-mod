@@ -12907,6 +12907,7 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 11, "scn_random_multi_plain_large"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 12, "scn_random_multi_steppe_medium"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 13, "scn_random_multi_steppe_large"),
+        #ENL - Begin
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 14, "scn_multi_scene_enl_dijon"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 15, "scn_multi_scene_enl_sandiboush"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 16, "scn_multi_scene_enl_vendetta"),
@@ -12933,7 +12934,8 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 37, "scn_multi_scene_custom_18"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 38, "scn_multi_scene_custom_19"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 39, "scn_multi_scene_custom_20"),
-        (assign, ":num_maps", 40),
+        #ENL - End
+        (assign, ":num_maps", 40), #ENL
       (else_try),
         (eq, ":game_type", multiplayer_game_type_battle),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin, "scn_multi_scene_1"),
@@ -12950,6 +12952,7 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 11, "scn_random_multi_plain_large"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 12, "scn_random_multi_steppe_medium"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 13, "scn_random_multi_steppe_large"),
+        #ENL - Begin
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 14, "scn_multi_scene_enl_dijon"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 15, "scn_multi_scene_enl_sandiboush"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 16, "scn_multi_scene_enl_vendetta"),
@@ -12976,7 +12979,8 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 37, "scn_multi_scene_custom_18"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 38, "scn_multi_scene_custom_19"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 39, "scn_multi_scene_custom_20"),
-        (assign, ":num_maps", 40),
+        #ENL - End
+        (assign, ":num_maps", 40), #ENL
       (else_try),
         (eq, ":game_type", multiplayer_game_type_destroy),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin, "scn_multi_scene_1"),
@@ -12986,6 +12990,7 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 4, "scn_multi_scene_9"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 5, "scn_multi_scene_12"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 6, "scn_multi_scene_14"),
+        #ENL - Begin
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 7, "scn_multi_scene_enl_dijon"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 8, "scn_multi_scene_enl_sandiboush"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 9, "scn_multi_scene_enl_vendetta"),
@@ -13012,7 +13017,8 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 30, "scn_multi_scene_custom_18"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 31, "scn_multi_scene_custom_19"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 32, "scn_multi_scene_custom_20"),
-        (assign, ":num_maps", 33),
+        #ENL - End
+        (assign, ":num_maps", 33), #ENL
       (else_try),
         (eq, ":game_type", multiplayer_game_type_capture_the_flag),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin, "scn_multi_scene_1"),
@@ -13029,6 +13035,7 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 11, "scn_random_multi_plain_large"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 12, "scn_random_multi_steppe_medium"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 13, "scn_random_multi_steppe_large"),
+        #ENL - Begin
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 14, "scn_multi_scene_enl_dijon"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 15, "scn_multi_scene_enl_sandiboush"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 16, "scn_multi_scene_enl_vendetta"),
@@ -13055,7 +13062,8 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 37, "scn_multi_scene_custom_18"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 38, "scn_multi_scene_custom_19"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 39, "scn_multi_scene_custom_20"),
-        (assign, ":num_maps", 40),
+        #ENL - End
+        (assign, ":num_maps", 40), #ENL
       (else_try),
         (eq, ":game_type", multiplayer_game_type_headquarters),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin, "scn_multi_scene_1"),
@@ -13068,7 +13076,29 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 7, "scn_multi_scene_14"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 8, "scn_multi_scene_17"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 9, "scn_multi_scene_18"),
-        (assign, ":num_maps", 10),
+        #ENL - Begin
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 10, "scn_multi_scene_custom_1"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 11, "scn_multi_scene_custom_2"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 12, "scn_multi_scene_custom_3"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 13, "scn_multi_scene_custom_4"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 14, "scn_multi_scene_custom_5"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 15, "scn_multi_scene_custom_6"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 16, "scn_multi_scene_custom_7"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 17, "scn_multi_scene_custom_8"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 18, "scn_multi_scene_custom_9"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 19, "scn_multi_scene_custom_10"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 20, "scn_multi_scene_custom_11"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 21, "scn_multi_scene_custom_12"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 22, "scn_multi_scene_custom_13"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 23, "scn_multi_scene_custom_14"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 24, "scn_multi_scene_custom_15"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 25, "scn_multi_scene_custom_16"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 26, "scn_multi_scene_custom_17"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 27, "scn_multi_scene_custom_18"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 28, "scn_multi_scene_custom_19"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 29, "scn_multi_scene_custom_20"),
+        #ENL - End
+        (assign, ":num_maps", 30), #ENL
       (else_try),
         (eq, ":game_type", multiplayer_game_type_siege),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin, "scn_multi_scene_3"),
@@ -13077,7 +13107,29 @@ scripts = [
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 3, "scn_multi_scene_13"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 4, "scn_multi_scene_15"),
         (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 5, "scn_multi_scene_16"),
-        (assign, ":num_maps", 6),
+        #ENL - Begin
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 6, "scn_multi_scene_custom_1"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 7, "scn_multi_scene_custom_2"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 8, "scn_multi_scene_custom_3"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 9, "scn_multi_scene_custom_4"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 10, "scn_multi_scene_custom_5"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 11, "scn_multi_scene_custom_6"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 12, "scn_multi_scene_custom_7"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 13, "scn_multi_scene_custom_8"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 14, "scn_multi_scene_custom_9"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 15, "scn_multi_scene_custom_10"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 16, "scn_multi_scene_custom_11"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 17, "scn_multi_scene_custom_12"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 18, "scn_multi_scene_custom_13"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 19, "scn_multi_scene_custom_14"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 20, "scn_multi_scene_custom_15"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 21, "scn_multi_scene_custom_16"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 22, "scn_multi_scene_custom_17"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 23, "scn_multi_scene_custom_18"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 24, "scn_multi_scene_custom_19"),
+        (troop_set_slot, "trp_multiplayer_data", multi_data_maps_for_game_type_begin + 25, "scn_multi_scene_custom_20"),
+        #ENL - End
+        (assign, ":num_maps", 26), #ENL
       (try_end),
       (assign, reg0, ":num_maps"),
       ]),
@@ -48816,6 +48868,8 @@ scripts = [
     (assign, ":available", 1),
     (try_begin),
       (eq, "$enl_public_mode", 0),
+      (neq, "$g_multiplayer_game_type", multiplayer_game_type_duel),
+      (neq, "$g_multiplayer_game_type", multiplayer_game_type_deathmatch),
       (assign, ":available", 0),
       (store_script_param_1, ":troop_id"),
       (store_script_param_2, ":team_no"),
