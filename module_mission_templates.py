@@ -271,6 +271,8 @@ enl_public_autokickban = [
   
 enl_class_limit_notify = (10, 0, 0, [
   (eq, "$enl_public_mode", 0),
+  (neq, "$g_multiplayer_game_type", multiplayer_game_type_duel),
+  (neq, "$g_multiplayer_game_type", multiplayer_game_type_deathmatch),
   (this_or_next|eq, "$enl_classlimit_infantry_enabled", 1),
   (this_or_next|eq, "$enl_classlimit_ranged_enabled", 1),
   (eq, "$enl_classlimit_cavalry_enabled", 1),
