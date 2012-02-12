@@ -549,5 +549,7 @@ mesh_mp_ui_host_maps_17 = 547
 mesh_mp_ui_host_maps_18 = 548
 mesh_ui_enl_dead = 549
 mesh_ui_enl_streamer = 550
+mesh_radiobutton_off = 551
+mesh_radiobutton_on = 552
 
 

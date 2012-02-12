@@ -1949,7 +1949,7 @@ presentations = [
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, reg0, pos1),
       
-      (create_check_box_overlay, "$enl_public_mode_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+      (create_check_box_overlay, "$enl_public_mode_checkbox", "mesh_radiobutton_off", "mesh_radiobutton_on"),
       (position_set_x, pos1, 7),
       (store_add, ":special_cur_y", ":cur_y", 7),
       (position_set_y, pos1, ":special_cur_y"),
@@ -1961,7 +1961,7 @@ presentations = [
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, reg0, pos1),
       
-      (create_check_box_overlay, "$enl_private_mode_checkbox", "mesh_checkbox_off", "mesh_checkbox_on"),
+      (create_check_box_overlay, "$enl_private_mode_checkbox", "mesh_radiobutton_off", "mesh_radiobutton_on"),
       (position_set_x, pos1, 327),
       (position_set_y, pos1, ":special_cur_y"),
       (overlay_set_position, "$enl_private_mode_checkbox", pos1),
@@ -7384,14 +7384,14 @@ presentations = [
         (this_or_next|eq, "$g_multiplayer_players_list_action_type" ,4),
         (is_between, "$g_multiplayer_players_list_action_type" , 9, 11),
         
-        (create_check_box_overlay, "$enl_players_list_checkbox_1", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (create_check_box_overlay, "$enl_players_list_checkbox_1", "mesh_radiobutton_off", "mesh_radiobutton_on"),
         (position_set_x, pos1, 25+285), #padding + container x
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$enl_players_list_checkbox_1", pos1),
         (overlay_set_size, "$enl_players_list_checkbox_1", pos2),
         
                 
-        (create_check_box_overlay, "$enl_players_list_checkbox_2", "mesh_checkbox_off", "mesh_checkbox_on"),
+        (create_check_box_overlay, "$enl_players_list_checkbox_2", "mesh_radiobutton_off", "mesh_radiobutton_on"),
         (position_set_x, pos1, 25+405/2+285), #padding + container width / 2 + container x
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$enl_players_list_checkbox_2", pos1),

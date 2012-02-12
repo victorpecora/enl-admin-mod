@@ -604,4 +604,7 @@ meshes = [
   
   ("ui_enl_dead", 0, "ui_enl_dead", 0, 0, 0, 0, 0, 0, 0.07, 0.07, 0.07),
   ("ui_enl_streamer", 0, "u_enl_streamer", 0, 0, 0, 0, 0, 0, 0.07, 0.07, 0.07),
+  
+  ("radiobutton_off", render_order_plus_1, "radiobutton_off", 0, 0, 0, 0, 0, 0, 1.1, 1.1, 1.1),
+  ("radiobutton_on", render_order_plus_1, "radiobutton_on", 0, 0, 0, 0, 0, 0, 1.1, 1.1, 1.1),
 ]
