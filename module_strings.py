@@ -4121,14 +4121,15 @@ We apologize sincerely if you contributed your suggestions and feedback but were
 
 #ENL - Begin
 strings +=[
+  ("enl_version", "{!}v{reg0}.{reg1}"),
+  ("enl_module", "ENL Admin Module"),
+  
+  #These must always be at the end of the file if we plan on changing them on strings.txt
   ("enl_announcement_1", "This is the first announcement. You must have it for announcements to work and it must be called \"enl_announcement_1\""),
   ("enl_announcement_2", "You can change your announcements in the strings.txt file of your server. Don't forget to use underscores instead of spaces!"),
   ("enl_announcement_3", "Except for the first announcement, you can have as many as you like. Remember to increase the number on top of strings.txt for each line you add."),
   ("enl_announcement_4", "You can use the caret symbol to insert a new line.^Like this."),
   ("enl_announcement_5", "You can disable announcements in the admin panel. Keep in mind announcements only work in public mode."),
   ("enl_announcements_end", "{!}Do not remove or rename this string!"),
-  
-  ("enl_version", "{!}v{reg0}.{reg1}"),
-  ("enl_module", "ENL Admin Module"),
 ]
 #ENL - End
