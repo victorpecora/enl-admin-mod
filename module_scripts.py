@@ -8803,8 +8803,11 @@ scripts = [
       (start_presentation, "prsnt_multiplayer_message_1"),
       #ENL
       (val_add, "$g_multiplayer_enl_draw_count", 1),
-      (str_store_string, s0, "@[EVENT]: round result draw"),
-      (server_add_message_to_log, "str_s0"),
+      (try_begin),
+        (multiplayer_is_dedicated_server),
+        (str_store_string, s0, "@[EVENT]: round result draw"),
+        (server_add_message_to_log, "str_s0"),
+      (try_end),
       #ENL
     (else_try), 
       (eq, ":value", 0), #defender wins

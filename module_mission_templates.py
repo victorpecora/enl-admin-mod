@@ -11532,9 +11532,12 @@ mission_templates = [
          (set_spawn_effector_scene_prop_kind, 0, -1), #during this mission, agents of "team 0" will try to spawn around scene props with kind equal to -1(no effector for this mod)
          (set_spawn_effector_scene_prop_kind, 1, -1), #during this mission, agents of "team 1" will try to spawn around scene props with kind equal to -1(no effector for this mod)
          #ENL
-         (assign, "$g_multiplayer_enl_draw_count", 0),
-         (str_store_string, s0, "@[EVENT]: map start"),
-         (server_add_message_to_log, "str_s0"),
+         (try_begin),
+           (multiplayer_is_dedicated_server),
+           (assign, "$g_multiplayer_enl_draw_count", 0),
+           (str_store_string, s0, "@[EVENT]: map start"),
+           (server_add_message_to_log, "str_s0"),
+         (try_end),
          #ENL
          (try_begin),
            (multiplayer_is_server),
@@ -11663,8 +11666,11 @@ mission_templates = [
                    (team_set_score, 1, ":team_2_score"),
                    (assign, "$g_winner_team", 1),
                    #ENL
-                   (str_store_string, s0, "@[EVENT]: round result team 2 win"),
-                   (server_add_message_to_log, "str_s0"),
+                   (try_begin),
+                    (multiplayer_is_dedicated_server),
+                    (str_store_string, s0, "@[EVENT]: round result team 2 win"),
+                    (server_add_message_to_log, "str_s0"),
+                   (try_end),
                    #ENL
                  (try_end),
 
@@ -11678,8 +11684,11 @@ mission_templates = [
                    (team_set_score, 0, ":team_1_score"),
                    (assign, "$g_winner_team", 0),
                    #ENL
-                   (str_store_string, s0, "@[EVENT]: round result team 1 win"),
-                   (server_add_message_to_log, "str_s0"),
+                   (try_begin),
+                     (multiplayer_is_dedicated_server),
+                     (str_store_string, s0, "@[EVENT]: round result team 1 win"),
+                     (server_add_message_to_log, "str_s0"),
+                   (try_end),
                    #ENL
                  (try_end),
 
@@ -11691,8 +11700,11 @@ mission_templates = [
                (try_begin),
                  (eq, "$g_winner_team", -1),
                  #ENL
-                 (str_store_string, s0, "@[EVENT]: round result draw"),
-                 (server_add_message_to_log, "str_s0"),
+                 (try_begin),
+                  (multiplayer_is_dedicated_server),
+                  (str_store_string, s0, "@[EVENT]: round result draw"),
+                  (server_add_message_to_log, "str_s0"),
+                 (try_end),
                  (val_add, "$g_multiplayer_enl_draw_count", 1),
                  #ENL
                (try_end),
@@ -11730,6 +11742,7 @@ mission_templates = [
          (assign, "$g_multiplayer_stats_chart_opened_manually", 0),
          (start_presentation, "prsnt_multiplayer_stats_chart"),
          #ENL
+         (multiplayer_is_dedicated_server),
          (team_get_score, reg0, 0),
          (team_get_score, reg1, 1),
          (assign, reg2, "$g_multiplayer_enl_draw_count"),
@@ -11820,16 +11833,22 @@ mission_templates = [
              (ge, ":difference_of_heights", min_allowed_flag_height_difference_to_make_score), #if difference between flag heights is greater than 
              (assign, "$g_winner_team", 0),                                                    #"min_allowed_flag_height_difference_to_make_score" const value
              #ENL
-			 (str_store_string, s0, "@[EVENT]: round result team 1 win by flag higher"),
-			 (server_add_message_to_log, "str_s0"),
+             (try_begin),
+               (multiplayer_is_dedicated_server),
+               (str_store_string, s0, "@[EVENT]: round result team 1 win by flag higher"),
+               (server_add_message_to_log, "str_s0"),
+             (try_end),
              #ENL
            (else_try), #if flag_2 is higher than flag_1
              (store_sub, ":difference_of_heights", ":height_of_flag_2", ":height_of_flag_1"),
              (ge, ":difference_of_heights", min_allowed_flag_height_difference_to_make_score), #if difference between flag heights is greater than 
              (assign, "$g_winner_team", 1),                                                    #"min_allowed_flag_height_difference_to_make_score" const value
              #ENL
-			 (str_store_string, s0, "@[EVENT]: round result team 2 win by flag higher"),
-			 (server_add_message_to_log, "str_s0"),
+             (try_begin),
+               (multiplayer_is_dedicated_server),
+               (str_store_string, s0, "@[EVENT]: round result team 2 win by flag higher"),
+               (server_add_message_to_log, "str_s0"),
+             (try_end),
              #ENL
            (try_end),
          (try_end),
@@ -11963,8 +11982,11 @@ mission_templates = [
 
          (start_presentation, "prsnt_multiplayer_flag_projection_display_bt"),
          #ENL
-		 (str_store_string, s0, "@[EVENT]: flag spawned"),
-		 (server_add_message_to_log, "str_s0"),
+         (try_begin),
+           (multiplayer_is_dedicated_server),
+           (str_store_string, s0, "@[EVENT]: flag spawned"),
+           (server_add_message_to_log, "str_s0"),
+         (try_end),
          #ENL
          ]),
 
@@ -12136,8 +12158,11 @@ mission_templates = [
            (call_script, "script_team_set_score", 0, ":team_1_score"),
            #for only server itself-----------------------------------------------------------------------------------------------
            #ENL
-           (str_store_string, s0, "@[EVENT]: round result team 1 win by flag raised"),
-           (server_add_message_to_log, "str_s0"),
+           (try_begin),
+             (multiplayer_is_dedicated_server),
+             (str_store_string, s0, "@[EVENT]: round result team 1 win by flag raised"),
+             (server_add_message_to_log, "str_s0"),
+           (try_end),
            #ENL
            (try_for_range, ":player_no", 1, ":num_players"), #0 is server so starting from 1
              (player_is_active, ":player_no"),
@@ -12164,8 +12189,11 @@ mission_templates = [
            (call_script, "script_team_set_score", 1, ":team_2_score"),
            #for only server itself-----------------------------------------------------------------------------------------------
            #ENL
-           (str_store_string, s0, "@[EVENT]: round result team 2 win by flag raised"),
-           (server_add_message_to_log, "str_s0"),
+           (try_begin),
+             (multiplayer_is_dedicated_server),
+             (str_store_string, s0, "@[EVENT]: round result team 2 win by flag raised"),
+             (server_add_message_to_log, "str_s0"),
+           (try_end),
            #ENL
            (try_for_range, ":player_no", 1, ":num_players"), #0 is server so starting from 1
              (player_is_active, ":player_no"),
@@ -12254,17 +12282,20 @@ mission_templates = [
        [
          #auto team balance control at the end of round         
          #ENL
-         (team_get_score, reg0, 0),
-         (team_get_score, reg1, 1),
-         (assign, reg2, "$g_multiplayer_enl_draw_count"),
          (try_begin),
-           (eq, reg2, 1),
-           (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draw)"),
-         (else_try),
-           (neq, reg2, 1),
-           (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draws)"),
+           (multiplayer_is_dedicated_server),
+           (team_get_score, reg0, 0),
+           (team_get_score, reg1, 1),
+           (assign, reg2, "$g_multiplayer_enl_draw_count"),
+           (try_begin),
+             (eq, reg2, 1),
+             (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draw)"),
+           (else_try),
+             (neq, reg2, 1),
+             (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draws)"),
+           (try_end),
+           (server_add_message_to_log, "str_s0"),
          (try_end),
-         (server_add_message_to_log, "str_s0"),
          #ENL
          (assign, ":number_of_players_at_team_1", 0),
          (assign, ":number_of_players_at_team_2", 0),
