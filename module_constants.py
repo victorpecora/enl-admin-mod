@@ -79,8 +79,8 @@ slot_agent_in_duel_with           = 21
 slot_agent_duel_start_time        = 22
 
 slot_agent_walker_occupation      = 25
-
-slot_agent_stray_horse_time       = 26 #ENL    
+    
+slot_agent_stray_horse_time       = 26 #ENL
 ########################################################
 ##  FACTION SLOTS          #############################
 ########################################################
@@ -477,6 +477,7 @@ slot_center_head_sheep			= 206 #sausages, wool
 slot_center_head_horses		 	= 207 #horses can be a trade item used in tracking but which are never offered for sale
 
 slot_center_acres_pasture       = 208 #pasture area for grazing of cattles and sheeps, if this value is high then number of cattles and sheeps increase faster
+slot_production_sources_begin = 209
 slot_center_acres_grain			= 209 #grain
 slot_center_acres_olives        = 210 #olives
 slot_center_acres_vineyard		= 211 #fruit
@@ -508,6 +509,7 @@ slot_center_tanneries			= 230 #leatherwork
 slot_center_shipyards			= 231 #naval stores - uses timber, pitch, and linen
 
 slot_center_household_gardens   = 232 #cabbages
+slot_production_sources_end = 233
 
 #all spice comes overland to Tulga
 #all dyes come by sea to Jelkala
@@ -1803,6 +1805,7 @@ ACHIEVEMENT_QUEEN = 77,
 ACHIEVEMENT_EMPRESS = 78,
 ACHIEVEMENT_TALK_OF_THE_TOWN = 79,
 ACHIEVEMENT_LADY_OF_THE_LAKE = 80,
+
 
 #ENL constants
 enl_ver_major = 2

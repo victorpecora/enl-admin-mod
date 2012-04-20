@@ -44,4 +44,3 @@ prsnt_budget_report = 42
 prsnt_game_before_quit = 43
 prsnt_multiplayer_duel_start_counter = 44
 prsnt_enl_admin_chat = 45
-prsnt_grid = 46

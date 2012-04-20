@@ -36,12 +36,6 @@ pilgrim_disguise = [itm_pilgrim_hood,itm_pilgrim_disguise,itm_practice_staff, it
 af_castle_lord = af_override_horse | af_override_weapons| af_require_civilian
 
 #ENL - Begin
-
-#Show grid - CTRL
-shock_grid = (0, 0, 0.1, [(key_clicked, key_left_control),],[
-    (neg|is_presentation_active, "prsnt_grid"),
-    (start_presentation, "prsnt_grid"),
-  ])
 enl_admin_chat = (0, 0, 0, [(neg|multiplayer_is_server),(game_key_clicked, gk_inventory_window),],[
     (multiplayer_get_my_player, ":my_player"),
     (player_is_admin, ":my_player"),
@@ -878,7 +872,8 @@ multiplayer_server_check_end_map = (
 multiplayer_once_at_the_first_frame = (
   0, 0, ti_once, [], [
     (start_presentation, "prsnt_multiplayer_welcome_message"),
-    (assign, "$enl_last_disconnected_uniqueid", -1), #ENL
+    #ENL - Begin
+    (assign, "$enl_last_disconnected_uniqueid", -1),
     
     # Print version to log
     (multiplayer_is_server), 
@@ -891,6 +886,7 @@ multiplayer_once_at_the_first_frame = (
     (server_add_message_to_log, "str_s0"),
     (server_add_message_to_log, "str_empty_string"),
     (display_message, "str_s0"),
+    #ENL - End
     ])
 
 multiplayer_battle_window_opened = (
@@ -8247,6 +8243,19 @@ mission_templates = [
          (store_trigger_param_2, ":killer_agent_no"),
          (call_script, "script_multiplayer_server_on_agent_killed_or_wounded_common", ":dead_agent_no", ":killer_agent_no"),
          ]),
+         
+      #  Tests for set_shader_param_ operations
+      #   (1, 0, 0, [],
+      # [
+      #  (str_store_string, s0, "@user_value_int"),
+      #  (assign, ":int_param", 100),
+      #  (assign, ":float_param", 100),
+      #  (set_fixed_point_multiplier, 100),
+      #  (set_shader_param_int, s0, ":int_param"),
+      #  (set_shader_param_float, "@user_value_float", ":float_param"),
+      #  (set_shader_param_float4, "@user_value_float4", 10, 20, 30, 40),
+      #  (set_shader_param_float4x4, "@user_value_float4x4", 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120),
+      #   ]),
       
       (1, 0, 0, [],
        [
@@ -8503,7 +8512,7 @@ mission_templates = [
       (61,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (62,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (63,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ], enl_triggers + #ENL
     [
       common_battle_init_banner,
 
@@ -8787,7 +8796,7 @@ mission_templates = [
       (61,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (62,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (63,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ],  enl_triggers + #ENL
     [
       common_battle_init_banner,
 
@@ -9815,7 +9824,7 @@ mission_templates = [
       
       (64,mtef_visitor_source|mtef_team_0,0,aif_start_alarmed,1,[]),
       (65,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ], enl_triggers + #ENL
     [
       common_battle_init_banner,
 
@@ -10496,7 +10505,7 @@ mission_templates = [
       (61,mtef_visitor_source,0,aif_start_alarmed,1,[]),
       (62,mtef_visitor_source,0,aif_start_alarmed,1,[]),
       (63,mtef_visitor_source,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ], enl_triggers + #ENL
     [
       multiplayer_server_check_belfry_movement,      
 
@@ -11531,14 +11540,16 @@ mission_templates = [
          (call_script, "script_determine_team_flags", 1),
          (set_spawn_effector_scene_prop_kind, 0, -1), #during this mission, agents of "team 0" will try to spawn around scene props with kind equal to -1(no effector for this mod)
          (set_spawn_effector_scene_prop_kind, 1, -1), #during this mission, agents of "team 1" will try to spawn around scene props with kind equal to -1(no effector for this mod)
-         #ENL
+
+         #ENL - Begin
          (try_begin),
            (multiplayer_is_dedicated_server),
            (assign, "$g_multiplayer_enl_draw_count", 0),
-           (str_store_string, s0, "@[EVENT]: map start"),
+           (str_store_string, s0, "@[EVENT]: Map start"),
            (server_add_message_to_log, "str_s0"),
          (try_end),
-         #ENL
+         #ENL - End
+         
          (try_begin),
            (multiplayer_is_server),
 
@@ -11594,13 +11605,13 @@ mission_templates = [
          (try_end),         
          
          (call_script, "script_calculate_new_death_waiting_time_at_death_mod"),
-         
+ 
          (try_begin),
            (neg|multiplayer_is_server),
            (try_begin),
              (eq, "$g_round_ended", 1),
              (assign, "$g_round_ended", 0),
-             
+
              #initialize scene object slots at start of new round at clients.
              (call_script, "script_initialize_all_scene_prop_slots"),
 
@@ -11665,13 +11676,13 @@ mission_templates = [
                    (val_add, ":team_2_score", 1),
                    (team_set_score, 1, ":team_2_score"),
                    (assign, "$g_winner_team", 1),
-                   #ENL
+                   #ENL - Begin
                    (try_begin),
                     (multiplayer_is_dedicated_server),
-                    (str_store_string, s0, "@[EVENT]: round result team 2 win"),
+                    (str_store_string, s0, "@[EVENT]: Round result: Team 2 win."),
                     (server_add_message_to_log, "str_s0"),
                    (try_end),
-                   #ENL
+                   #ENL - End
                  (try_end),
 
                  (call_script, "script_show_multiplayer_message", multiplayer_message_type_round_result_in_battle_mode, "$g_winner_team"), #1 is winner team
@@ -11683,13 +11694,13 @@ mission_templates = [
                    (val_add, ":team_1_score", 1),
                    (team_set_score, 0, ":team_1_score"),
                    (assign, "$g_winner_team", 0),
-                   #ENL
+                   #ENL - Begin
                    (try_begin),
                      (multiplayer_is_dedicated_server),
-                     (str_store_string, s0, "@[EVENT]: round result team 1 win"),
+                     (str_store_string, s0, "@[EVENT]: Round result: Team 1 win."),
                      (server_add_message_to_log, "str_s0"),
                    (try_end),
-                   #ENL
+                   #ENL - End
                  (try_end),
 
                  (call_script, "script_show_multiplayer_message", multiplayer_message_type_round_result_in_battle_mode, "$g_winner_team"), #0 is winner team  
@@ -11697,17 +11708,18 @@ mission_templates = [
                (try_end),
                (store_mission_timer_a, "$g_round_finish_time"),
                (assign, "$g_round_ended", 1),
+               #ENL - Begin
                (try_begin),
                  (eq, "$g_winner_team", -1),
                  #ENL
                  (try_begin),
                   (multiplayer_is_dedicated_server),
-                  (str_store_string, s0, "@[EVENT]: round result draw"),
+                  (str_store_string, s0, "@[EVENT]: Round result: draw."),
                   (server_add_message_to_log, "str_s0"),
                  (try_end),
                  (val_add, "$g_multiplayer_enl_draw_count", 1),
-                 #ENL
                (try_end),
+               #ENL - End
              (try_end),
            (try_end),
          (try_end),
@@ -11741,20 +11753,15 @@ mission_templates = [
          (call_script, "script_multiplayer_event_mission_end"),
          (assign, "$g_multiplayer_stats_chart_opened_manually", 0),
          (start_presentation, "prsnt_multiplayer_stats_chart"),
-         #ENL
+         #ENL - Begin
          (multiplayer_is_dedicated_server),
          (team_get_score, reg0, 0),
          (team_get_score, reg1, 1),
          (assign, reg2, "$g_multiplayer_enl_draw_count"),
-         (try_begin),
-           (eq, reg2, 1),
-           (str_store_string, s0, "@[EVENT]: map end score at {reg0} - {reg1} ({reg2} draw)"),
-         (else_try),
-           (neq, reg2, 1),
-           (str_store_string, s0, "@[EVENT]: map end score at {reg0} - {reg1} ({reg2} draws)"),
-         (try_end),
+         (store_sub, reg3, reg2, 1),
+         (str_store_string, s0, "@[EVENT]: Map ended. Score is {reg0} - {reg1} ({reg2} {reg3?draws:draw})"),
          (server_add_message_to_log, "str_s0"),
-         #ENL
+         #ENL - End
          ]),
       
       (1, 0, 0, [(multiplayer_is_server), 
@@ -11832,24 +11839,24 @@ mission_templates = [
              (store_sub, ":difference_of_heights", ":height_of_flag_1", ":height_of_flag_2"), 
              (ge, ":difference_of_heights", min_allowed_flag_height_difference_to_make_score), #if difference between flag heights is greater than 
              (assign, "$g_winner_team", 0),                                                    #"min_allowed_flag_height_difference_to_make_score" const value
-             #ENL
+             #ENL - Begin
              (try_begin),
                (multiplayer_is_dedicated_server),
-               (str_store_string, s0, "@[EVENT]: round result team 1 win by flag higher"),
+               (str_store_string, s0, "@[EVENT]: Round result: Team 1 win by flag higher."),
                (server_add_message_to_log, "str_s0"),
              (try_end),
-             #ENL
+             #ENL - End
            (else_try), #if flag_2 is higher than flag_1
              (store_sub, ":difference_of_heights", ":height_of_flag_2", ":height_of_flag_1"),
              (ge, ":difference_of_heights", min_allowed_flag_height_difference_to_make_score), #if difference between flag heights is greater than 
              (assign, "$g_winner_team", 1),                                                    #"min_allowed_flag_height_difference_to_make_score" const value
-             #ENL
+             #ENL - Begin
              (try_begin),
                (multiplayer_is_dedicated_server),
-               (str_store_string, s0, "@[EVENT]: round result team 2 win by flag higher"),
+               (str_store_string, s0, "@[EVENT]: Round result: Team 2 win by flag higher."),
                (server_add_message_to_log, "str_s0"),
              (try_end),
-             #ENL
+             #ENL - End
            (try_end),
          (try_end),
     
@@ -11981,13 +11988,13 @@ mission_templates = [
          (prop_instance_set_position, ":flag_2_id", pos0),
 
          (start_presentation, "prsnt_multiplayer_flag_projection_display_bt"),
-         #ENL
+         #ENL - Begin
          (try_begin),
            (multiplayer_is_dedicated_server),
-           (str_store_string, s0, "@[EVENT]: flag spawned"),
+           (str_store_string, s0, "@[EVENT]: Flag spawned."),
            (server_add_message_to_log, "str_s0"),
          (try_end),
-         #ENL
+         #ENL - End
          ]),
 
       (3, 0, 0, [(multiplayer_is_server),  #this trigger is to reduce "$g_battle_waiting_seconds" at between last 66th and last 24th seconds 1 per 3 seconds, total 14 seconds.
@@ -12157,13 +12164,13 @@ mission_templates = [
            #for only server itself-----------------------------------------------------------------------------------------------
            (call_script, "script_team_set_score", 0, ":team_1_score"),
            #for only server itself-----------------------------------------------------------------------------------------------
-           #ENL
+           #ENL - Begin
            (try_begin),
              (multiplayer_is_dedicated_server),
-             (str_store_string, s0, "@[EVENT]: round result team 1 win by flag raised"),
+             (str_store_string, s0, "@[EVENT]: Round result: Team 1 win by flag raised."),
              (server_add_message_to_log, "str_s0"),
            (try_end),
-           #ENL
+           #ENL - End
            (try_for_range, ":player_no", 1, ":num_players"), #0 is server so starting from 1
              (player_is_active, ":player_no"),
              (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_set_team_score, 0, ":team_1_score"),             
@@ -12188,13 +12195,13 @@ mission_templates = [
            #for only server itself-----------------------------------------------------------------------------------------------
            (call_script, "script_team_set_score", 1, ":team_2_score"),
            #for only server itself-----------------------------------------------------------------------------------------------
-           #ENL
+           #ENL - Begin
            (try_begin),
              (multiplayer_is_dedicated_server),
-             (str_store_string, s0, "@[EVENT]: round result team 2 win by flag raised"),
+             (str_store_string, s0, "@[EVENT]: Round result: Team 2 win by flag raised."),
              (server_add_message_to_log, "str_s0"),
            (try_end),
-           #ENL
+           #ENL - End
            (try_for_range, ":player_no", 1, ":num_players"), #0 is server so starting from 1
              (player_is_active, ":player_no"),
              (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_set_team_score, 1, ":team_2_score"),             
@@ -12280,23 +12287,18 @@ mission_templates = [
                  (val_sub, ":seconds_past_till_round_ended", "$g_round_finish_time"),
                  (ge, ":seconds_past_till_round_ended", "$g_multiplayer_respawn_period")],
        [
-         #auto team balance control at the end of round         
-         #ENL
+         #ENL - Begin
          (try_begin),
            (multiplayer_is_dedicated_server),
            (team_get_score, reg0, 0),
            (team_get_score, reg1, 1),
            (assign, reg2, "$g_multiplayer_enl_draw_count"),
-           (try_begin),
-             (eq, reg2, 1),
-             (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draw)"),
-           (else_try),
-             (neq, reg2, 1),
-             (str_store_string, s0, "@[EVENT]: round start score at {reg0} - {reg1} ({reg2} draws)"),
-           (try_end),
+           (store_sub, reg3, reg2, 1),
+           (str_store_string, s0, "@[EVENT]: Round start. Score at {reg0} - {reg1} ({reg2} {reg3?draws:draw})"),
            (server_add_message_to_log, "str_s0"),
          (try_end),
-         #ENL
+         #ENL - End
+         #auto team balance control at the end of round         
          (assign, ":number_of_players_at_team_1", 0),
          (assign, ":number_of_players_at_team_2", 0),
          (get_max_players, ":num_players"),
@@ -12498,7 +12500,7 @@ mission_templates = [
          #(multiplayer_is_server),
          (assign, ":human_agents_spawned_at_team_1", "$g_multiplayer_num_bots_team_1"),
          (assign, ":human_agents_spawned_at_team_2", "$g_multiplayer_num_bots_team_2"),
-                 
+         
          (get_max_players, ":num_players"),
          (try_for_range, ":player_no", 0, ":num_players"),
            (player_is_active, ":player_no"),
@@ -12728,7 +12730,7 @@ mission_templates = [
       (61,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (62,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (63,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ], enl_triggers + #ENL
     [
       common_battle_init_banner,
 
@@ -14732,7 +14734,7 @@ mission_templates = [
       (61,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (62,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
       (63,mtef_visitor_source|mtef_team_1,0,aif_start_alarmed,1,[]),
-     ], enl_triggers+ #ENL
+     ], enl_triggers + #ENL
     [
       multiplayer_server_check_polls,
 

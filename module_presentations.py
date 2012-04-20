@@ -40,7 +40,7 @@ presentations = [
     ]),
   ]),
   #ENL - End
-
+  
   ("game_credits",prsntf_read_only,mesh_load_window,[
       (ti_on_presentation_load,
        [(assign, "$g_presentation_credits_obj_1", -1),
@@ -76,7 +76,9 @@ presentations = [
           (this_or_next|key_clicked, key_escape),
           (this_or_next|key_clicked, key_back_space),
           (this_or_next|key_clicked, key_left_mouse_button),
-          (key_clicked, key_right_mouse_button),
+          (this_or_next|key_clicked, key_right_mouse_button),
+          (this_or_next|key_clicked, key_xbox_ltrigger),
+		  (key_clicked, key_xbox_rtrigger),
           (presentation_set_duration, 0),
         (try_end),
         (try_begin),
@@ -1692,7 +1694,8 @@ presentations = [
     (ti_on_presentation_run,
      [
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (presentation_set_duration, 0),
       (else_try),
         (key_clicked, key_right_mouse_button),
@@ -1829,6 +1832,7 @@ presentations = [
         (eq, "$g_multiplayer_selected_map", "scn_random_multi_steppe_large"),
         (assign, ":map_image", "mesh_mp_ui_host_maps_randoms"),
       (else_try),
+      #ENL - Begin
         (eq, "$g_multiplayer_selected_map", "scn_multi_scene_enl_dijon"),
         (assign, ":map_image", "mesh_mp_ui_host_maps_enl_a1"),
       (else_try),
@@ -1847,6 +1851,7 @@ presentations = [
         (eq, "$g_multiplayer_selected_map", "scn_multi_scene_enl_snowyhamlet"),
         (assign, ":map_image", "mesh_mp_ui_host_maps_enl_b3"),
       (else_try),
+      #ENL - End
         (assign, ":map_image", "mesh_mp_ui_host_maps_randomp"),
       (try_end),
       
@@ -1865,7 +1870,7 @@ presentations = [
       (position_set_x, pos1, 1002),
       (position_set_y, pos1, 1002),
       (overlay_set_size, reg0, pos1),
-
+      
       #ENL - Begin
       (try_begin),
         (eq, "$enl_public_mode", 0),
@@ -1873,6 +1878,7 @@ presentations = [
       (else_try),
         (assign, ":cur_y", 1240+3*40), # need space for the 3 extra items in public mode
       (try_end),
+      
       #(assign, ":cur_y", 1240),
       #ENL - End
       (assign, ":cur_y_adder", 40),
@@ -1937,10 +1943,9 @@ presentations = [
       (store_add, ":special_cur_y", ":cur_y", 7),
       (position_set_y, pos1, ":special_cur_y"),
       (overlay_set_position, "$g_presentation_obj_admin_panel_41", pos1),
-
       (server_get_anti_cheat, ":server_anti_cheat"),
       (overlay_set_val, "$g_presentation_obj_admin_panel_41", ":server_anti_cheat"),
-      
+
       (val_sub, ":cur_y", ":cur_y_adder"),
       
       #ENL - Begin
@@ -2847,19 +2852,6 @@ presentations = [
       (position_set_y, pos1, 1500),
       (overlay_set_size, "$g_presentation_obj_admin_panel_2", pos1),
 
-      #ENL - Begin
-      # (try_begin),
-        # (player_is_active, 0), #Is not in main menu
-        # (create_button_overlay, "$enl_restart_map", "@Restart Map", tf_center_justify),
-        # (position_set_x, pos1, 825),
-        # (position_set_y, pos1, 130),
-        # (overlay_set_position, "$enl_restart_map", pos1),
-        # (position_set_x, pos1, 1500),
-        # (position_set_y, pos1, 1500),
-        # (overlay_set_size, "$enl_restart_map", pos1),
-      # (try_end),
-      #ENL - End
-      
       (presentation_set_duration, 999999),
 
       (try_begin),
@@ -2875,10 +2867,6 @@ presentations = [
       (store_trigger_param_2, ":value"),
       (try_begin),
       #ENL - Begin
-        # (eq, ":object", "$enl_restart_map"),
-        # (multiplayer_send_int_to_server, multiplayer_event_enl_server_common, enl_event_restart_map),
-        # (presentation_set_duration, 0),
-      # (else_try),
         (eq, ":object", "$enl_class_limits_checkbox"),
         (val_add, ":value", 1),
         (val_mod, ":value", 2),
@@ -3082,14 +3070,17 @@ presentations = [
     (ti_on_presentation_run,
      [
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+        (key_clicked, key_xbox_start),
         (presentation_set_duration, 0),
+      #ENL - Begin
       (try_end),
       (try_begin),
         (eq, "$enl_restart_admin_panel", 1),
         (assign, "$enl_restart_admin_panel", 0),
         (presentation_set_duration, 0),
         (start_presentation, "prsnt_game_multiplayer_admin_panel"),
+      #ENL - End
       (try_end),
       ]),
     ]),
@@ -3246,7 +3237,9 @@ presentations = [
          (this_or_next|key_clicked, key_space),
          (this_or_next|key_clicked, key_enter),
          (this_or_next|key_clicked, key_left_mouse_button),
-         (key_clicked, key_right_mouse_button),
+         (this_or_next|key_clicked, key_right_mouse_button),
+         (this_or_next|key_clicked, key_xbox_ltrigger),
+         (key_clicked, key_xbox_rtrigger),
          (assign, "$g_multiplayer_welcome_message_shown", 1),
          (presentation_set_duration, 0),
          (neg|is_presentation_active, "prsnt_multiplayer_escape_menu"),
@@ -3397,7 +3390,8 @@ presentations = [
      [
       (multiplayer_get_my_player, ":my_player_no"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (eq, "$g_waiting_for_confirmation_to_terminate", 0),
         (multiplayer_get_my_team, ":my_team"),
         (try_begin),
@@ -3553,7 +3547,8 @@ presentations = [
     (ti_on_presentation_run,
      [
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (multiplayer_get_my_player, ":my_player_no"),
         (is_between, ":my_player_no", 0, multiplayer_max_possible_player_id),
         (multiplayer_get_my_troop, ":my_troop"),
@@ -4475,7 +4470,8 @@ presentations = [
       (try_begin),
         (eq, "$g_close_equipment_selection", 0),
         (try_begin),
-          (key_clicked, key_escape),
+          (this_or_next|key_clicked, key_escape),
+		  (key_clicked, key_xbox_start),
           (try_begin),
             (neq, "$g_current_opened_item_details", -1),
             (close_item_details),
@@ -6051,7 +6047,7 @@ presentations = [
                 (position_set_x, pos1, 750),
                 (position_set_y, pos1, 750),
                 (overlay_set_size, reg0, pos1),
-                (store_add, ":sub_cur_x", ":cur_x", 176	),
+                (store_add, ":sub_cur_x", ":cur_x", 176), #ENL - was 130
                 (position_set_x, pos1, ":sub_cur_x"),
                 (position_set_y, pos1, ":cur_y"),
                 (overlay_set_position, reg0, pos1),
@@ -6243,7 +6239,6 @@ presentations = [
         (position_set_y, pos1, 1000),
         (overlay_set_size, reg0, pos1),
 
-        
         (create_text_overlay, reg0, "str_ping", tf_right_align),
         (overlay_set_color, reg0, 0xFFFFFF),
         (store_add, ":sub_cur_x", ":cur_x", 215), #200
@@ -6541,7 +6536,6 @@ presentations = [
           (position_set_y, pos1, ":cur_y"),
           (overlay_set_position, reg0, pos1),
       
-    
           (player_get_kill_count, reg0, ":max_kills_player_no"),
           (create_text_overlay, reg0, "str_reg0", tf_right_align),
           (overlay_set_color, reg0, 0xFFFFFF),
@@ -6725,7 +6719,7 @@ presentations = [
           (position_set_y, pos1, ":cur_y"),
           (overlay_set_position, reg0, pos1),
           
-          #ENL - Begin
+           #ENL - Begin
           (try_begin),
             (player_slot_eq, ":player_no", slot_player_is_streamer, 1),
             (create_mesh_overlay, reg0, "mesh_ui_enl_streamer"),
@@ -6798,14 +6792,14 @@ presentations = [
       (str_clear, s0),
       (create_text_overlay, "$g_presentation_obj_escape_menu_container", s0, tf_scrollable_style_2),
       (position_set_x, pos1, 285),
-      (position_set_y, pos1, 75), #75
+      (position_set_y, pos1, 75),
       (overlay_set_position, "$g_presentation_obj_escape_menu_container", pos1),
       (position_set_x, pos1, 405),
-      (position_set_y, pos1, 550), #550
+      (position_set_y, pos1, 550),
       (overlay_set_area_size, "$g_presentation_obj_escape_menu_container", pos1),
       (set_container_overlay, "$g_presentation_obj_escape_menu_container"),
 
-      (assign, ":cur_y", 525),  #ENL 515
+      (assign, ":cur_y", 525), #ENL - was 500
 
       # (create_text_overlay, reg0, "str_choose_an_option", 0),
       # (overlay_set_color, reg0, 0xFFFFFF),
@@ -6897,8 +6891,10 @@ presentations = [
           (create_button_overlay, "$enl_teleport_button", "@Teleport", 0),
           (overlay_set_color, "$enl_teleport_button", 0xFFFFFF),
         (try_end),
+        #ENL - End
       (try_end),
-      
+
+      #ENL - Begin
       (try_begin),
         (this_or_next|eq, "$enl_public_mode", 0),
         (player_is_admin, ":my_player_no"),
@@ -6906,7 +6902,7 @@ presentations = [
         (overlay_set_color, "$enl_printid_button", 0xFFFFFF),
       (try_end),
       #ENL - End
-
+      
       (create_button_overlay, "$g_presentation_obj_escape_menu_11", "str_mute_player", 0),
       (overlay_set_color, "$g_presentation_obj_escape_menu_11", 0xFFFFFF),
 
@@ -6934,54 +6930,54 @@ presentations = [
       (overlay_set_size, "$g_presentation_obj_escape_menu_1", pos2), #ENL
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_2", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_2", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_2", pos2), #ENL
       (try_end),
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_3", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_3", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_3", pos2), #ENL
       (try_end),
-      (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+      (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, "$g_presentation_obj_escape_menu_4", pos1),
       (overlay_set_size, "$g_presentation_obj_escape_menu_4", pos2), #ENL
-      (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+      (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
       (position_set_y, pos1, ":cur_y"),
       # (overlay_set_position, "$g_presentation_obj_escape_menu_5", pos1),
-      # (overlay_set_size, "$g_presentation_obj_escape_menu_5", pos2), #ENL - redefine keys
-      # (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+      # (val_sub, ":cur_y", escape_menu_item_height), #ENL - redefine keys
+      # (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, "$g_presentation_obj_escape_menu_13", pos1),
       (overlay_set_size, "$g_presentation_obj_escape_menu_13", pos2), #ENL
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_6", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_6", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_6", pos2), #ENL
       (try_end),
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_7", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_7", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_7", pos2), #ENL
       (try_end),
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_8", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_8", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_8", pos2), #ENL
       (try_end),
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_9", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_9", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_9", pos2), #ENL
@@ -7023,18 +7019,18 @@ presentations = [
         (overlay_set_position, "$enl_printid_button", pos1),
       (try_end),
       #ENL - End
-      (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+      (val_sub, ":cur_y", 32), #ENL - was (val_sub, ":cur_y", escape_menu_item_height),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, "$g_presentation_obj_escape_menu_11", pos1),
       (overlay_set_size, "$g_presentation_obj_escape_menu_11", pos2), #ENL
       (try_begin),
         (ge, "$g_presentation_obj_escape_menu_12", 0),
-        (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+        (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
         (position_set_y, pos1, ":cur_y"),
         (overlay_set_position, "$g_presentation_obj_escape_menu_12", pos1),
         (overlay_set_size, "$g_presentation_obj_escape_menu_12", pos2), #ENL
       (try_end),
-      (val_sub, ":cur_y", 32), #ENL (val_sub, ":cur_y", escape_menu_item_height),
+      (val_sub, ":cur_y", 32), #ENL - (val_sub, ":cur_y", escape_menu_item_height),
       (position_set_y, pos1, ":cur_y"),
       (overlay_set_position, "$g_presentation_obj_escape_menu_10", pos1),
       (overlay_set_size, "$g_presentation_obj_escape_menu_10", pos2), #ENL
@@ -7059,7 +7055,7 @@ presentations = [
         (eq, ":object", "$g_presentation_obj_escape_menu_4"),
         (presentation_set_duration, 0),
         (change_screen_options),
-      # (else_try), #ENL - redefine keys
+      # (else_try), #ENL - removed redefine keys event
         # (eq, ":object", "$g_presentation_obj_escape_menu_5"),
         # (presentation_set_duration, 0),
         # (change_screen_controls),
@@ -7132,15 +7128,18 @@ presentations = [
     (ti_on_presentation_run,
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+        (key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
+      #ENL - Begin
       (try_end),
       (try_begin),
         (eq, "$enl_restart_escape_menu", 1),
         (assign, "$enl_restart_escape_menu", 0),
         (presentation_set_duration, 0),
         (start_presentation, "prsnt_multiplayer_escape_menu"),
+      #ENL - End
       (try_end),
       ]),
     ]),
@@ -7256,7 +7255,8 @@ presentations = [
     (ti_on_presentation_run,
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
       (try_end),
@@ -7264,8 +7264,8 @@ presentations = [
     ]),
 
   ("multiplayer_show_players_list", prsntf_manual_end_only, 0, [
-    (ti_on_presentation_load, [
-      (set_fixed_point_multiplier, 1000),
+    (ti_on_presentation_load,
+     [(set_fixed_point_multiplier, 1000),
 
       (create_mesh_overlay, reg0, "mesh_mp_ingame_menu"),
       (position_set_x, pos1, 250),
@@ -7275,12 +7275,12 @@ presentations = [
       (position_set_y, pos1, 1000),
       (overlay_set_size, reg0, pos1),
 
+      #ENL - Begin
       (assign, ":container_height", 430), #Container height
       
       (str_store_string, s0, "@player"),
       (call_script, "script_enl_get_players_list_strings"),
       
-      #ENL - Begin
       (create_text_overlay, "$enl_players_list_title", "@{s1}", 0),
       (overlay_set_color, "$enl_players_list_title", 0xFFFFFF),
       (position_set_x, pos1, 290),
@@ -7434,6 +7434,7 @@ presentations = [
       
       #ENL - End
       
+      
       (str_clear, s0),
       (create_text_overlay, "$g_presentation_obj_show_players_1", s0, tf_scrollable_style_2),
       (position_set_x, pos1, 285),
@@ -7444,15 +7445,6 @@ presentations = [
       (overlay_set_area_size, "$g_presentation_obj_show_players_1", pos1),
       (set_container_overlay, "$g_presentation_obj_show_players_1"),
 
-      # (create_mesh_overlay, reg0, "mesh_white_plane"),
-      # (init_position, pos1),
-      # (overlay_set_position, reg0, pos1),
-      # (position_set_x, pos1, 1000*50),
-      # (position_set_y, pos1, 1000*50),
-      # (overlay_set_size, reg0, pos1),
-      # (overlay_set_alpha, reg0, 0x40),
-      # (overlay_set_color, reg0, 0),
-      
       #(assign, ":cur_y", 450),
       (multiplayer_get_my_player, ":my_player_no"),
 
@@ -7465,10 +7457,12 @@ presentations = [
         (try_begin),
           (neq, "$g_multiplayer_players_list_action_type", 5),
           (neq, "$g_multiplayer_players_list_action_type", 6),
-          (neq, "$g_multiplayer_players_list_action_type", 8),  #
-          (neq, "$g_multiplayer_players_list_action_type", 9),  # ENL
-          (neq, "$g_multiplayer_players_list_action_type", 10), # 
-          (neq, "$g_multiplayer_players_list_action_type", 11), #
+          #ENL - Begin
+          (neq, "$g_multiplayer_players_list_action_type", 8),
+          (neq, "$g_multiplayer_players_list_action_type", 9),
+          (neq, "$g_multiplayer_players_list_action_type", 10),
+          (neq, "$g_multiplayer_players_list_action_type", 11),
+          #ENL - End
           (assign, ":continue", 1),
         (else_try),
           (eq, "$g_multiplayer_players_list_action_type", 5),
@@ -7517,19 +7511,17 @@ presentations = [
         (try_end),
         (eq, ":continue", 1),
       
-        (val_add, ":cur_y", enl_button_height), #ENL (val_add, ":cur_y", escape_menu_item_height),
+        (val_add, ":cur_y", enl_button_height), #ENL - was (val_add, ":cur_y", escape_menu_item_height),
       (try_end),
-      
-      
-      # ENL - Native title commented out
+
+      # ENL - Native title disabled
       # (create_text_overlay, reg0, "str_choose_a_player", 0),
       # (overlay_set_color, reg0, 0xFFFFFF),
-      # (position_set_x, pos1, 285),
+      # (position_set_x, pos1, 0),
       # (position_set_y, pos1, ":cur_y"),
       # (overlay_set_position, reg0, pos1),
-      # (val_sub, ":cur_y", escape_menu_item_height), 
-      
-      
+      # (val_sub, ":cur_y", escape_menu_item_height),
+
       (get_max_players, ":num_players"),
       (try_for_range, ":player_no", 1, ":num_players"), #0 is server no need to write it
         (player_is_active, ":player_no"),
@@ -7539,10 +7531,12 @@ presentations = [
         (try_begin),
           (neq, "$g_multiplayer_players_list_action_type", 5),
           (neq, "$g_multiplayer_players_list_action_type", 6),
+          #ENL - Begin
           (neq, "$g_multiplayer_players_list_action_type", 8),  #heal
           (neq, "$g_multiplayer_players_list_action_type", 9),  #spec or swap
           (neq, "$g_multiplayer_players_list_action_type", 10), #teleport
           (neq, "$g_multiplayer_players_list_action_type", 11), #streaming
+          #ENL - End
           (assign, ":continue", 1),
         (else_try),
           (eq, "$g_multiplayer_players_list_action_type", 5),
@@ -7556,6 +7550,7 @@ presentations = [
           (player_get_is_muted, ":is_muted", ":player_no"),
           (eq, ":is_muted", 1),
           (assign, ":continue", 1),
+        #ENL - Begin
         (else_try),
           (eq, "$g_multiplayer_players_list_action_type", 8),
           (player_get_agent_id, ":agent_id", ":player_no"),
@@ -7587,6 +7582,7 @@ presentations = [
           (player_get_team_no, ":team_no", ":player_no"),
           (eq, ":team_no", multi_team_spectator),
           (assign, ":continue", 1),
+        #ENL - End
         (try_end),
         (eq, ":continue", 1),
         (str_store_player_username, s0, ":player_no"),
@@ -7620,74 +7616,74 @@ presentations = [
             (overlay_set_val, ":overlay_id", 0),
           (try_end),
         (else_try),
+        #ENL - End
           (create_button_overlay, ":overlay_id", s0, 0),
           (overlay_set_color, ":overlay_id", 0xFFFFFF),
+          #ENL - Begin
           (position_set_x, pos2, 750),
           (position_set_y, pos2, 750),
           (overlay_set_size, ":overlay_id", pos2),
-          (position_set_x, pos1, 0), #ENL - was 130
+          #ENL - End
+          (position_set_x, pos1, 0), # ENL - was 130
           (position_set_y, pos1, ":cur_y"),
           (overlay_set_position, ":overlay_id", pos1),
+        #ENL - Begin
         (try_end),
-
-        
-        
-                
-        (player_get_kill_count, reg1, ":player_no"),
-        (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Kills
-        (overlay_set_color, reg0, 0xFFFFFF),
-        (position_set_x, pos1, 505-285), # x - container x
-        (position_set_y, pos1, ":cur_y"),
-        (overlay_set_position, reg0, pos1),
-        (overlay_set_size, reg0, pos2),
-        
-        (player_get_death_count, reg1, ":player_no"),
-        (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Deaths
-        (overlay_set_color, reg0, 0xFFFFFF),
-        (position_set_x, pos1, 565-285), # x - container x
-        (position_set_y, pos1, ":cur_y"),
-        (overlay_set_position, reg0, pos1),
-        (overlay_set_size, reg0, pos2),
-        
-        (player_get_ping, reg1, ":player_no"),
-        (try_begin),
-          (is_between, "$g_multiplayer_players_list_action_type", 3, 5),
-          (player_get_slot, reg1, ":player_no", slot_player_teamkills),
-        (else_try),
-          (eq, "$g_multiplayer_players_list_action_type", 8),
-          (player_get_agent_id, ":agent_no", ":player_no"),
-          (agent_is_active, ":agent_no"),
+          (player_get_kill_count, reg1, ":player_no"),
+          (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Kills
+          (overlay_set_color, reg0, 0xFFFFFF),
+          (position_set_x, pos1, 505-285), # x - container x
+          (position_set_y, pos1, ":cur_y"),
+          (overlay_set_position, reg0, pos1),
+          (overlay_set_size, reg0, pos2),
+          
+          (player_get_death_count, reg1, ":player_no"),
+          (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Deaths
+          (overlay_set_color, reg0, 0xFFFFFF),
+          (position_set_x, pos1, 565-285), # x - container x
+          (position_set_y, pos1, ":cur_y"),
+          (overlay_set_position, reg0, pos1),
+          (overlay_set_size, reg0, pos2),
+          
+          (player_get_ping, reg1, ":player_no"),
           (try_begin),
-            (neg|agent_is_alive, ":agent_no"),
-            (assign, reg1, 0),
+            (is_between, "$g_multiplayer_players_list_action_type", 3, 5),
+            (player_get_slot, reg1, ":player_no", slot_player_teamkills),
           (else_try),
-            (store_agent_hit_points, reg1, ":agent_no"),
+            (eq, "$g_multiplayer_players_list_action_type", 8),
+            (player_get_agent_id, ":agent_no", ":player_no"),
+            (agent_is_active, ":agent_no"),
+            (try_begin),
+              (neg|agent_is_alive, ":agent_no"),
+              (assign, reg1, 0),
+            (else_try),
+              (store_agent_hit_points, reg1, ":agent_no"),
+            (try_end),
+          (else_try),
+            (eq, "$g_multiplayer_players_list_action_type", 9),
+            (player_get_team_no, reg1, ":player_no"),
+            (val_add, reg1, 1),
+          (else_try),
+            (eq, "$g_multiplayer_players_list_action_type", 10),
+            (multiplayer_get_my_player, ":my_player"),
+            (call_script, "script_enl_distance_between_players", ":player_no", ":my_player"),
           (try_end),
-        (else_try),
-          (eq, "$g_multiplayer_players_list_action_type", 9),
-          (player_get_team_no, reg1, ":player_no"),
-          (val_add, reg1, 1),
-        (else_try),
-          (eq, "$g_multiplayer_players_list_action_type", 10),
-          (multiplayer_get_my_player, ":my_player"),
-          (call_script, "script_enl_distance_between_players", ":player_no", ":my_player"),
-        (try_end),
-        (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Special
-        (overlay_set_color, reg0, 0xFFFFFF),
-        (position_set_x, pos1, 630-285), # x - container x
-        (position_set_y, pos1, ":cur_y"),
-        (overlay_set_position, reg0, pos1),
-        (overlay_set_size, reg0, pos2),
-        
-        (val_sub, ":cur_y", enl_button_height), #was (val_sub, ":cur_y", escape_menu_item_height),
-        #ENL - End
-        (player_set_slot, ":player_no", slot_player_button_index, ":overlay_id"),
+          (create_text_overlay, reg0, "@{reg1}", tf_center_justify), #Special
+          (overlay_set_color, reg0, 0xFFFFFF),
+          (position_set_x, pos1, 630-285), # x - container x
+          (position_set_y, pos1, ":cur_y"),
+          (overlay_set_position, reg0, pos1),
+          (overlay_set_size, reg0, pos2),
+          
+          #ENL - End
+          (val_sub, ":cur_y", enl_button_height), #ENL - was escape_menu_item_height
+          (player_set_slot, ":player_no", slot_player_button_index, ":overlay_id"),
       (try_end),
 
       (presentation_set_duration, 999999),
-    ]),
-    (ti_on_presentation_event_state_change, [
-      (store_trigger_param_1, ":object"),
+      ]),
+    (ti_on_presentation_event_state_change,
+     [(store_trigger_param_1, ":object"),
       (get_max_players, ":num_players"),
       (try_for_range, ":player_no", 1, ":num_players"), #0 is server no need to write it
         (player_is_active, ":player_no"),
@@ -7752,7 +7748,7 @@ presentations = [
         #ENL - End
         (try_end),
         (assign, ":num_players", 0), #break
-        #(presentation_set_duration, 0), #ENL - commented out
+        #(presentation_set_duration, 0), #ENL - disabled auto close
       (try_end),
       #ENL - Begin
       (try_begin),
@@ -7824,14 +7820,16 @@ presentations = [
         (start_presentation, "prsnt_multiplayer_show_players_list"),
       (try_end),
       #ENL - End
-    ]),
-    (ti_on_presentation_run, [
-      (store_trigger_param_1, ":cur_time"),
+      ]),
+    (ti_on_presentation_run,
+     [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+        (key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
       (try_end),
+      #ENL - Begin
       (try_begin),
         (eq, "$enl_restart_escape_menu", 1),
         (assign, "$enl_restart_escape_menu", 0),
@@ -7845,8 +7843,9 @@ presentations = [
         (presentation_set_duration, 0),
         (start_presentation, "prsnt_multiplayer_show_players_list"),
       (try_end),
+      #ENL - End
+      ]),
     ]),
-  ]),
 
   ("multiplayer_show_maps_list", prsntf_manual_end_only, 0, [
     (ti_on_presentation_load,
@@ -7932,7 +7931,8 @@ presentations = [
     (ti_on_presentation_run,
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
       (try_end),
@@ -8026,7 +8026,8 @@ presentations = [
     (ti_on_presentation_run,
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
       (try_end),
@@ -8130,7 +8131,8 @@ presentations = [
     (ti_on_presentation_run,
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
-        (key_clicked, key_escape),
+        (this_or_next|key_clicked, key_escape),
+		(key_clicked, key_xbox_start),
         (gt, ":cur_time", 200),
         (presentation_set_duration, 0),
       (try_end),
@@ -8214,6 +8216,7 @@ presentations = [
      [(store_trigger_param_1, ":cur_time"),
       (try_begin),
         (this_or_next|key_clicked, key_escape),
+		(this_or_next|key_clicked, key_xbox_start),
         (key_clicked, key_2),
         (gt, ":cur_time", 500),
         (multiplayer_send_int_to_server, multiplayer_event_answer_to_poll, 0),
@@ -8436,7 +8439,9 @@ presentations = [
           (this_or_next|key_clicked, key_space),
           (this_or_next|key_clicked, key_enter),
           (this_or_next|key_clicked, key_escape),
-          (key_clicked, key_back_space),
+          (this_or_next|key_clicked, key_back_space),
+		  (this_or_next|key_clicked, key_xbox_ltrigger),
+          (key_clicked, key_xbox_rtrigger),
           (presentation_set_duration, 0),
         (try_end),
 
@@ -12725,7 +12730,9 @@ presentations = [
           (this_or_next|key_clicked, key_escape),
           (this_or_next|key_clicked, key_back_space),
           (this_or_next|key_clicked, key_left_mouse_button),
-          (key_clicked, key_right_mouse_button),
+          (this_or_next|key_clicked, key_right_mouse_button),
+          (this_or_next|key_clicked, key_xbox_ltrigger),
+          (key_clicked, key_xbox_rtrigger),
           (try_begin),
             (eq, "$g_game_before_quit_state", 0),
             (val_add, "$g_game_before_quit_state", 1),
@@ -12839,58 +12846,6 @@ presentations = [
         (presentation_set_duration, 0),
         (str_clear, s67),
       (try_end),
-    ]),
-  ]),
-  
-  ("grid", prsntf_manual_end_only, 0, [
-    (ti_on_presentation_load, [
-      (set_fixed_point_multiplier, 1000),
-      
-      (try_for_range, ":dir", 0, 2),
-        (init_position, pos2),
-        (position_set_x, pos2, 50),
-        (position_set_y, pos2, 50),
-        (try_begin),
-          (eq, ":dir", 0),
-          (position_set_x, pos2, 66000),
-        (else_try),
-          (position_set_y, pos2, 66000),
-        (try_end),
-        (try_for_range, ":i", 1, 10),
-          (store_mul, ":cur", ":i", 100),
-          (init_position, pos1),
-          (try_begin),
-            (eq, ":dir", 0),
-            (position_set_y, pos1, ":cur"),
-          (else_try),
-            (position_set_x, pos1, ":cur"),
-          (try_end),
-          
-          (create_mesh_overlay, reg0, "mesh_white_plane"),
-          (overlay_set_color, reg0, 0xFFFFFF),
-          (overlay_set_position, reg0, pos1),
-          (overlay_set_size, reg0, pos2),
-          
-        (try_end),
-      (try_end),
-      
-      (create_text_overlay, "$grid_coordinates", "@X:  Y:", tf_center_justify|tf_with_outline),
-      (position_set_x, pos1, 500),
-      (position_set_y, pos1, 700),
-      (overlay_set_position, "$grid_coordinates", pos1),
-      (overlay_set_color, "$grid_coordinates", 0xFFFFFF),
-      
-      (presentation_set_duration, 999999),
-    ]),
-    (ti_on_presentation_run, [
-      (mouse_get_position, pos9),
-      (position_get_x, reg0, pos9),
-      (position_get_y, reg1, pos9),
-      
-      (overlay_set_text, "$grid_coordinates", "@X:{reg0} Y:{reg1}"),
-      
-      (neg|key_is_down, key_left_control),
-      (presentation_set_duration, 0),
     ]),
   ]),
   
