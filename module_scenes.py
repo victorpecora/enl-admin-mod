@@ -1206,8 +1206,11 @@ scenes = [
     [],[], "outer_terrain_steppe"),
   ("random_multi_steppe_large", sf_generate|sf_randomize|sf_auto_entry_points, "none", "none", (0,0),(100, 100), -0.5, "0x000000012a00d8630009fe7f0004406900002920001e4f81",
     [],[], "outer_terrain_steppe"),
-	
-##ENL Maps Start##	
+    
+  #ENL - Begin
+  
+  #ENL maps
+  
   ("multi_scene_enl_dijon",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000000300416a600035cd600007ee80000012100003fbc",
     [],[],"outer_terrain_plain"),
   ("multi_scene_enl_sandiboush",sf_generate,"none", "none", (0,0),(100,100),-100,"0x000000005000d795000350d4000011a4000017ee0000440d",
@@ -1220,9 +1223,9 @@ scenes = [
     [],[],"outer_terrain_plain"),
   ("multi_scene_enl_snowyhamlet",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000001400389800003a4ea000058340000637a0000399b",
     [],[],"outer_terrain_snow"),
-##ENL Maps End##
-
-##Custom Maps Start##
+    
+  # Custom maps
+    
   ("multi_scene_custom_1",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000001300389800003a4ea000058340000637a0000399b",
     [],[],"outer_terrain_plain"),
   ("multi_scene_custom_2",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000001300389800003a4ea000058340000637a0000399b",
@@ -1263,8 +1266,9 @@ scenes = [
     [],[],"outer_terrain_plain"),
   ("multi_scene_custom_20",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000001300389800003a4ea000058340000637a0000399b",
     [],[],"outer_terrain_plain"),
-##Custom Maps End##
-    
+  
+  #ENL - End
+
   ("multiplayer_maps_end",sf_generate,"none", "none", (0,0),(100,100),-100,"0x00000001300389800003a4ea000058340000637a0000399b",
     [],[],"outer_terrain_plain"),
 

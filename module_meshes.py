@@ -112,12 +112,6 @@ meshes = [
   ("mp_ui_host_maps_13", 0, "mp_ui_host_maps_c3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_host_maps_randomp", 0, "mp_ui_host_maps_randomp", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_host_maps_randoms", 0, "mp_ui_host_maps_randoms", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_a1", 0, "mp_ui_host_maps_enl_a1", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_a2", 0, "mp_ui_host_maps_enl_a2", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_a3", 0, "mp_ui_host_maps_enl_a3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_b1", 0, "mp_ui_host_maps_enl_b1", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_b2", 0, "mp_ui_host_maps_enl_b2", 0, 0, 0, 0, 0, 0, 1, 1, 1),
-  ("mp_ui_host_maps_enl_b3", 0, "mp_ui_host_maps_enl_b3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_command_panel", 0, "mp_ui_command_panel", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_command_border_l", 0, "mp_ui_command_border_l", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_command_border_r", 0, "mp_ui_command_border_r", 0, 0, 0, 0, 0, 0, 1, 1, 1),
@@ -601,6 +595,16 @@ meshes = [
   ("mp_ui_host_maps_16", 0, "mp_ui_host_maps_d1", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_host_maps_17", 0, "mp_ui_host_maps_d2", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   ("mp_ui_host_maps_18", 0, "mp_ui_host_maps_d3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+]
+
+#ENL - Begin
+meshes += [
+  ("mp_ui_host_maps_enl_a1", 0, "mp_ui_host_maps_enl_a1", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+  ("mp_ui_host_maps_enl_a2", 0, "mp_ui_host_maps_enl_a2", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+  ("mp_ui_host_maps_enl_a3", 0, "mp_ui_host_maps_enl_a3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+  ("mp_ui_host_maps_enl_b1", 0, "mp_ui_host_maps_enl_b1", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+  ("mp_ui_host_maps_enl_b2", 0, "mp_ui_host_maps_enl_b2", 0, 0, 0, 0, 0, 0, 1, 1, 1),
+  ("mp_ui_host_maps_enl_b3", 0, "mp_ui_host_maps_enl_b3", 0, 0, 0, 0, 0, 0, 1, 1, 1),
   
   ("ui_enl_dead", 0, "ui_enl_dead", 0, 0, 0, 0, 0, 0, 0.07, 0.07, 0.07),
   ("ui_enl_streamer", 0, "u_enl_streamer", 0, 0, 0, 0, 0, 0, 0.07, 0.07, 0.07),
@@ -608,3 +612,4 @@ meshes = [
   ("radiobutton_off", render_order_plus_1, "radiobutton_off", 0, 0, 0, 0, 0, 0, 1.1, 1.1, 1.1),
   ("radiobutton_on", render_order_plus_1, "radiobutton_on", 0, 0, 0, 0, 0, 0, 1.1, 1.1, 1.1),
 ]
+#ENL - End

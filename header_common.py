@@ -54,11 +54,7 @@ multiplayer_event_open_game_rules                             = 45
 multiplayer_event_offer_duel                                  = 46
 multiplayer_event_admin_set_disallow_ranged_weapons           = 47
 
-
-
 #server events
-
-
 multiplayer_event_return_max_num_players                      = 50
 multiplayer_event_return_num_bots_in_team                     = 51
 multiplayer_event_return_friendly_fire                        = 52
@@ -113,7 +109,7 @@ multiplayer_event_return_friendly_fire_damage_self_ratio      = 100
 multiplayer_event_return_friendly_fire_damage_friend_ratio    = 101
 multiplayer_event_return_allow_player_banners                 = 102
 multiplayer_event_return_force_default_armor                  = 103
-multiplayer_event_return_anti_cheat                           = 104 
+multiplayer_event_return_anti_cheat                           = 104
 multiplayer_event_return_open_game_rules                      = 105
 multiplayer_event_return_max_num_bots                         = 106
 multiplayer_event_return_server_mission_timer_while_player_joined = 107
