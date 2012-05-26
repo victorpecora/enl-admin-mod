@@ -541,15 +541,17 @@ mesh_flag_project_rb_miss = 539
 mesh_mp_ui_host_maps_16 = 540
 mesh_mp_ui_host_maps_17 = 541
 mesh_mp_ui_host_maps_18 = 542
-mesh_mp_ui_host_maps_enl_a1 = 543
-mesh_mp_ui_host_maps_enl_a2 = 544
-mesh_mp_ui_host_maps_enl_a3 = 545
-mesh_mp_ui_host_maps_enl_b1 = 546
-mesh_mp_ui_host_maps_enl_b2 = 547
-mesh_mp_ui_host_maps_enl_b3 = 548
-mesh_ui_enl_dead = 549
-mesh_ui_enl_streamer = 550
-mesh_radiobutton_off = 551
-mesh_radiobutton_on = 552
+mesh_mp_ui_host_maps_19 = 543
+mesh_mp_ui_host_maps_20 = 544
+mesh_mp_ui_host_maps_enl_a1 = 545
+mesh_mp_ui_host_maps_enl_a2 = 546
+mesh_mp_ui_host_maps_enl_a3 = 547
+mesh_mp_ui_host_maps_enl_b1 = 548
+mesh_mp_ui_host_maps_enl_b2 = 549
+mesh_mp_ui_host_maps_enl_b3 = 550
+mesh_ui_enl_dead = 551
+mesh_ui_enl_streamer = 552
+mesh_radiobutton_off = 553
+mesh_radiobutton_on = 554
 
 

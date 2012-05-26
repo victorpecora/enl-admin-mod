@@ -571,18 +571,27 @@ simple_triggers = [
 
      #this is moved up from below , from a 24 x 15 slot to a 24 slot
      (try_for_range, ":center_no", centers_begin, centers_end),
-       (neg|is_between, ":center_no", castles_begin, castles_end),
-
-	   (store_random_in_range, ":random", 0, 30),
-	   (le, ":random", 10),
+       #(neg|is_between, ":center_no", castles_begin, castles_end),
+       (store_random_in_range, ":random", 0, 30),
+       (le, ":random", 10),
 	   
        (call_script, "script_get_center_ideal_prosperity", ":center_no"),
        (assign, ":ideal_prosperity", reg0),
        (party_get_slot, ":prosperity", ":center_no", slot_town_prosperity),       
        (try_begin),
-	     (eq, ":random", 0), #with 3% probability it will gain 15 prosperity even it has higher prosperity than its ideal prosperity.
-         (call_script, "script_change_center_prosperity", ":center_no", 15),
-         (val_add, "$newglob_total_prosperity_from_convergence", 15),
+	     (eq, ":random", 0), #with 3% probability it will gain +10/-10 prosperity even it has higher prosperity than its ideal prosperity.
+         (try_begin),
+           (store_random_in_range, ":random", 0, 2),
+           (try_begin),
+             (eq, ":random", 0),
+             (neg|is_between, ":center_no", castles_begin, castles_end), #castles always gain positive prosperity from surprise income to balance their prosperity.
+             (call_script, "script_change_center_prosperity", ":center_no", -10),
+             (val_add, "$newglob_total_prosperity_from_convergence", -10),
+           (else_try),     
+             (call_script, "script_change_center_prosperity", ":center_no", 10),
+             (val_add, "$newglob_total_prosperity_from_convergence", 10),
+           (try_end),
+         (try_end),
 	   (else_try),
          (gt, ":prosperity", ":ideal_prosperity"),		 
          (call_script, "script_change_center_prosperity", ":center_no", -1),
@@ -1039,11 +1048,17 @@ simple_triggers = [
           (store_random_in_range, ":who_moves_first", 0, 2),
 			
           (try_begin),
+            (this_or_next|eq, ":num_centers", 0), #Thanks Caba`drin & Osviux
             (neq, ":who_moves_first", 0),
             (neq, ":troop_no", "trp_player"),
 				
-            #do a defection
-			(assign, "$g_give_advantage_to_original_faction", 1),            
+                        #do a defection
+                        (try_begin), 
+                          (neq, ":num_centers", 0), 
+                          (assign, "$g_give_advantage_to_original_faction", 1), 
+                        (try_end),
+			#(assign, "$g_give_advantage_to_original_faction", 1),
+        
 			(store_faction_of_troop, ":orig_faction", ":troop_no"),
 			(call_script, "script_lord_find_alternative_faction", ":troop_no"),
 			(assign, ":new_faction", reg0),			

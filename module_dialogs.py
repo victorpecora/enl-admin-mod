@@ -5974,7 +5974,6 @@ dialogs = [
   [anyone ,"start", [(troop_slot_eq,"$g_talk_troop",slot_troop_occupation, slto_kingdom_hero),
                      (neq, "$g_talk_troop_met", 0),
                      (gt, "$g_time_since_last_talk", 24),
-#                     (lt, "$g_talk_troop_faction_relation", 0),
                      (le,"$talk_context",tc_siege_commander),
                      ],
    "We meet again, {playername}...", "lord_start", []],
@@ -6067,7 +6066,7 @@ dialogs = [
 
    
    
-  [anyone,"lord_start", [(gt, "$g_comment_found", 0), #changed to s32 from s62 because overlaps with setup_talk_info strings
+  [anyone,"lord_start", [(gt, "$g_comment_found", 0), #changed to s32 from s62 because overlaps with setup_talk_info strings                         
 						 (str_store_string, s1, "$g_last_comment_copied_to_s42"),
 						 (try_begin),
 						   (eq, "$cheat_mode", 1),
@@ -10471,7 +10470,7 @@ dialogs = [
     (try_end),
     (eq, ":has_center", 1),
 	 
-    (call_script, "script_npc_decision_checklist_peace_or_war", "$g_encountered_party_faction", "fac_player_supporters_faction", "trp_player"),
+        (call_script, "script_npc_decision_checklist_peace_or_war", "$g_talk_troop_faction", "fac_player_supporters_faction", "trp_player"), #moto fix here 
 	(lt, reg0, 0),
     ], "I do not see it as being in my current interest to make peace.", "lord_pretalk",[]], 
 
@@ -10489,7 +10488,7 @@ dialogs = [
 
   [anyone|plyr,"lord_truce_offer",
    [
-   (call_script, "script_diplomacy_start_peace_between_kingdoms", "$g_encountered_party_faction", "$players_kingdom", 1), 
+   (call_script, "script_diplomacy_start_peace_between_kingdoms", "$g_talk_troop_faction", "$players_kingdom", 1), #moto fix here 
     ], "I accept. Let us stop making war upon each other, for the time being anyway", "close_window",[]], 
  
    [anyone|plyr,"lord_truce_offer",
@@ -16107,6 +16106,26 @@ I suppose there are plenty of bounty hunters around to get the job done . . .", 
    "{playername} -- I assume that you, as a {man/lady} of honor, will accord gentle-born ladies such as ourselves the right to return to our families, and not demand a ransom.", "lady_talk_refugee",[
  ]],
 
+
+  [anyone,"start", [(troop_slot_eq, "$g_talk_troop", slot_troop_occupation, slto_kingdom_lady),
+                    (check_quest_active, "qst_escort_lady"),
+                    (eq, "$talk_context", tc_entering_center_quest_talk),
+                    (quest_slot_eq, "qst_escort_lady", slot_quest_object_troop, "$g_talk_troop")],
+   "Thank you for escorting me here, {playername}. Please accept this gift as a token of my gratitude.\
+ I hope we shall meet again sometime in the future.", "lady_escort_lady_succeeded",
+   [
+     (quest_get_slot, ":cur_center", "qst_escort_lady", slot_quest_target_center),
+     (add_xp_as_reward, 300),
+     (call_script, "script_troop_add_gold", "trp_player", 250),
+     (call_script, "script_end_quest", "qst_escort_lady"),
+     (call_script, "script_change_player_relation_with_troop", "$g_talk_troop", 2),
+     (troop_set_slot, "$g_talk_troop", slot_troop_cur_center, ":cur_center"),
+     (remove_member_from_party,"$g_talk_troop"),
+     ]],
+
+	[anyone|plyr,"lady_escort_lady_succeeded", [], "It was an honor to serve you, {s65}.", "close_window",[]],
+
+
   [anyone,"start",
    [
     (troop_slot_eq, "$g_talk_troop", slot_troop_occupation, slto_kingdom_lady),
@@ -16387,25 +16406,6 @@ I suppose there are plenty of bounty hunters around to get the job done . . .", 
     (add_xp_as_reward, 400),
     (call_script, "script_end_quest", "qst_duel_for_lady"),
     ]],
-
-
-  [anyone,"start", [(troop_slot_eq, "$g_talk_troop", slot_troop_occupation, slto_kingdom_lady),
-                    (check_quest_active, "qst_escort_lady"),
-                    (eq, "$talk_context", tc_entering_center_quest_talk),
-                    (quest_slot_eq, "qst_escort_lady", slot_quest_object_troop, "$g_talk_troop")],
-   "Thank you for escorting me here, {playername}. Please accept this gift as a token of my gratitude.\
- I hope we shall meet again sometime in the future.", "lady_escort_lady_succeeded",
-   [
-     (quest_get_slot, ":cur_center", "qst_escort_lady", slot_quest_target_center),
-     (add_xp_as_reward, 300),
-     (call_script, "script_troop_add_gold", "trp_player", 250),
-     (call_script, "script_end_quest", "qst_escort_lady"),
-     (call_script, "script_change_player_relation_with_troop", "$g_talk_troop", 2),
-     (troop_set_slot, "$g_talk_troop", slot_troop_cur_center, ":cur_center"),
-     (remove_member_from_party,"$g_talk_troop"),
-     ]],
-
-	[anyone|plyr,"lady_escort_lady_succeeded", [], "It was an honor to serve you, {s65}.", "close_window",[]],
 
 	[anyone,"start", [
 	(troop_slot_eq, "$g_talk_troop", slot_troop_occupation, slto_kingdom_lady),
@@ -22468,10 +22468,27 @@ I suppose there are plenty of bounty hunters around to get the job done . . .", 
  I can help you find a job if you are looking for some honest work.", "mayor_info_talk",[(assign, "$mayor_info_lord_told",0)]],
 
   [anyone|plyr,"mayor_info_talk",[(eq, "$mayor_info_lord_told",0)], "Who rules this town?", "mayor_info_lord",[]],
-  [anyone, "mayor_info_lord", [(party_get_slot, ":town_lord","$current_town",slot_town_lord),(str_store_troop_name, s10, ":town_lord")],
+  
+  [anyone, "mayor_info_lord", #moto fix
+   [
+    (party_get_slot, ":town_lord","$current_town",slot_town_lord), 
+    (try_begin), 
+        (eq, ":town_lord", "trp_player"), 
+        (str_store_string, s10, "str_your_excellency"), 
+    (else_try), 
+        (is_between, ":town_lord", active_npcs_begin, active_npcs_end), 
+        (str_store_troop_name, s10, ":town_lord"), 
+    (else_try), 
+        (faction_get_slot, ":faction_leader", "$g_encountered_party_faction", slot_faction_leader), 
+        (str_store_troop_name, s10, ":faction_leader"), 
+    (try_end), 
+    ],
    "Our town's lord and protector is {s10}. He owns the castle and sometimes resides there, and collects taxes from the town.\
  However we regulate ourselves in most of the matters that concern ourselves.\
- As the town's guildmaster I have the authority to decide those things.", "mayor_info_talk",[(assign, "$mayor_info_lord_told",1)]],
+ As the town's guildmaster I have the authority to decide those things.", "mayor_info_talk",
+   [
+       (assign, "$mayor_info_lord_told",1)
+    ]],
   
   [anyone|plyr,"mayor_info_talk",[], "That's all I need to know. Thanks.", "mayor_pretalk",[]],
 
