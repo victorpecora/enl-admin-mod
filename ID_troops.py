@@ -929,3 +929,4 @@ trp_bandit_leaders_end = 927
 trp_relative_of_merchant = 928
 trp_relative_of_merchants_end = 929
 trp_teamkill_data = 930
+trp_connections = 931
