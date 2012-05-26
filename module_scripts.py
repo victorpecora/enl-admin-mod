@@ -9026,36 +9026,46 @@ scripts = [
     (store_script_param, ":num_integers", 1),
     (store_script_param, ":num_strings", 2),
     (try_begin),
-      (eq, ":num_strings", 0),
-      (eq, ":num_integers", 2),
-      
-      (assign, reg2, enl_ver_major),
-      (assign, reg3, enl_ver_minor),
-      
-      (store_mul, ":cur_version", reg0, 10),
-      (val_add, ":cur_version", reg1),
-      
-      (store_mul, ":local_version", reg2, 10),
-      (val_add, ":local_version", reg3),
-      
-      (str_store_string, s0, "@ENL module v{reg2}.{reg3}"),
-      (try_begin),
-        (eq, ":cur_version", ":local_version"),
-        (str_store_string, s0, "@{s0}^Your ENL mod is up to date."),
-      (else_try),
-        (gt, ":cur_version", ":local_version"),
-        (str_store_string, s0, "@{s0}^An update is available: v{reg0}.{reg1}"),
-      (else_try),
-        (str_store_string, s0, "@{s0}^Error: Your version is from the future."),
-      (try_end),
-      
-      (display_message, "str_s0"),
-      (multiplayer_is_dedicated_server),
-      (server_add_message_to_log, "str_s0"),
-    (else_try),
+      #Error checking
       (eq, ":num_strings", 1),
       (eq, ":num_integers", 0),
       (display_message, "@^Error: Could not check for updates. "),
+    (else_try),
+      (eq, reg0, response_version),
+      (eq, ":num_strings", 0),
+      (eq, ":num_integers", 4),
+      
+      (assign, reg4, enl_ver_major),
+      (assign, reg5, enl_ver_minor),
+      (assign, reg6, enl_ver_patch),
+      
+      (store_mul, ":cur_version", reg1, 1000),
+      (store_mul, ":cur_minor", reg2, 10),
+      (val_add, ":cur_version", ":cur_minor"),
+      (val_add, ":cur_version", reg3),
+      
+      (store_mul, ":local_version", reg4, 1000),
+      (store_mul, ":local_minor", reg5, 10),
+      (val_add, ":local_version", ":local_minor"),
+      (val_add, ":local_version", reg6),
+
+      (call_script, "script_enl_version_to_s0"),
+      (try_begin),
+        (eq, ":cur_version", ":local_version"),
+        (assign, "$enl_version_check", 1),
+        (str_store_string, s0, "@{s0}^Your ENL mod is up to date."),
+      (else_try),
+        (gt, ":cur_version", ":local_version"),
+        (assign, "$enl_version_check", -1),
+        (str_store_string, s0, "@{s0}^An update is available: v{reg1}.{reg2}.{reg3}"),
+      (else_try),
+        (assign, "$enl_version_check", 2),
+        (str_store_string, s0, "@{s0}^Error: Your version is from the future."),
+      (try_end),
+      
+      #(display_message, "str_s0"),
+      (multiplayer_is_dedicated_server),
+      (server_add_message_to_log, "str_s0"),
     (try_end),
     #ENL - End
   ]),
@@ -49037,8 +49047,9 @@ scripts = [
   # Input: none
   # Output: Saves the string "v{reg0}.{reg1}" to string register 0.
   ("enl_version_to_s0", [
-    (assign, reg0, enl_ver_major),
-    (assign, reg1, enl_ver_minor),
+    (assign, reg4, enl_ver_major),
+    (assign, reg5, enl_ver_minor),
+    (assign, reg6, enl_ver_patch),
     
     (str_store_string, s0, "str_enl_version"),
   ]),
