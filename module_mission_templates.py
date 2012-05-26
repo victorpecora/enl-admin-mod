@@ -59,10 +59,9 @@ enl_player_leave = (
   ti_on_player_exit, 0, 0, [(multiplayer_is_server),],[
     (store_trigger_param_1, ":player_no"),
     (try_begin),
-	    #prevent ti_on_player_exit spam (?)
-	    (player_get_unique_id, ":unique_id", ":player_no"),
-	    (neq, ":unique_id", "$enl_last_disconnected_uniqueid"), 
-	    (assign, "$enl_last_disconnected_uniqueid", ":unique_id"),
+      #prevent ti_on_player_exit spam
+      (troop_slot_eq, "trp_connections", ":player_no", 1),
+      (troop_set_slot, "trp_connections", ":player_no", 0),
   
       (str_store_player_username, s1, ":player_no"),
       (str_store_string, s0, "@{s1} has left the game."),
@@ -73,14 +72,17 @@ enl_player_leave = (
 enl_player_join = (
   ti_server_player_joined, 0, 0, [(multiplayer_is_server),],[
     (store_trigger_param_1, ":player_no"),
-    (gt, ":player_no", 0),
+    (player_is_active, ":player_no"),
+    
+    #prevent ti_on_player_exit spam
+    (troop_slot_eq, "trp_connections", ":player_no", 0),
+    (troop_set_slot, "trp_connections", ":player_no", 1),
+
     (player_get_unique_id, ":unique_id", ":player_no"),
-    (try_begin),
-      #prevent ti_on_player_exit spam
-      (eq, ":unique_id", "$enl_last_disconnected_uniqueid"),
-      (assign, "$enl_last_disconnected_uniqueid", -1),
-    (try_end),
+    
     (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"),
+    
+    #Broadcast message
     (assign, reg0, ":unique_id"),
     (str_store_player_username, s1, ":player_no"),
     (str_clear, s2),
@@ -129,22 +131,20 @@ enl_public_announcements = (
   1, 0, 0, [
     (multiplayer_is_server),
     (eq, "$enl_public_mode", 1),
-    (store_sub, ":announcement_total", "str_enl_announcements_end", "str_enl_announcement_1"),
-    (ge, ":announcement_total", 1),
     (eq, "$enl_announcement_enabled", 1),
+    (ge, "$enl_announcement_total", 1),
   ],[
     (val_add, "$enl_announcement_time", 1),
     (val_mod, "$enl_announcement_time", "$enl_announcement_interval"),
     (eq, "$enl_announcement_time", 0),
     
-    (store_add, ":cur_announcement", "str_enl_announcement_1", "$enl_announcement_current"),
-    (str_store_string, s0, ":cur_announcement"),
+    (store_add, ":current_announcement", "str_enl_announcement_1", "$enl_announcement_current"),
+    (str_store_string, s0, ":current_announcement"),
     (str_store_string, s0, "@[ANNOUNCEMENT]: {s0}"),
     (call_script, "script_enl_broadcast_message_s0", 1),
     
     (val_add, "$enl_announcement_current", 1),
-    (store_sub, ":announcement_total", "str_enl_announcements_end", "str_enl_announcement_1"),
-    (val_mod, "$enl_announcement_current", ":announcement_total"),
+    (val_mod, "$enl_announcement_current", "$enl_announcement_total"),
   ])
   
 enl_public_kill_strayhorses = [
@@ -279,9 +279,26 @@ enl_class_limit_notify = (10, 0, 0, [
     (multiplayer_send_string_to_player, ":cur_player", multiplayer_event_show_server_message, s0),
   (try_end),
 ])
+
+enl_version_check = (0, 0, ti_once, [], [
+  #ENL - Begin
+ 
+  # Print version to log
+  (multiplayer_is_server), 
+  (eq, "$enl_saved_version_to_log", 0),
+  (assign, "$enl_saved_version_to_log", 1),
+
+  (call_script, "script_enl_version_to_s0"),
+  (str_store_string, s0, "@Running ENL Admin Module {s0}"),
+  (server_add_message_to_log, "str_empty_string"),
+  (server_add_message_to_log, "str_s0"),
+  (server_add_message_to_log, "str_empty_string"),
+  (display_message, "str_s0"),
+  #ENL - End
+])
   
 enl_triggers = [enl_admin_chat, enl_player_join, enl_player_leave, enl_public_announcements,
- enl_public_announcement_map, enl_class_limit_notify]
+ enl_public_announcement_map, enl_class_limit_notify, enl_version_check]
 enl_triggers += enl_public_autokickban
 enl_triggers += enl_public_kill_strayhorses
 #ENL - End
@@ -872,21 +889,6 @@ multiplayer_server_check_end_map = (
 multiplayer_once_at_the_first_frame = (
   0, 0, ti_once, [], [
     (start_presentation, "prsnt_multiplayer_welcome_message"),
-    #ENL - Begin
-    (assign, "$enl_last_disconnected_uniqueid", -1),
-    
-    # Print version to log
-    (multiplayer_is_server), 
-    (eq, "$enl_saved_version_to_log", 0),
-    (assign, "$enl_saved_version_to_log", 1),
-
-    (call_script, "script_enl_version_to_s0"),
-    (str_store_string, s0, "@Running ENL Admin Module {s0}"),
-    (server_add_message_to_log, "str_empty_string"),
-    (server_add_message_to_log, "str_s0"),
-    (server_add_message_to_log, "str_empty_string"),
-    (display_message, "str_s0"),
-    #ENL - End
     ])
 
 multiplayer_battle_window_opened = (
