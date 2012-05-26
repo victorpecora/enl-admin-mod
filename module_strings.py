@@ -4123,7 +4123,7 @@ We apologize sincerely if you contributed your suggestions and feedback but were
 
 #ENL - Begin
 strings +=[
-  ("enl_version", "{!}v{reg0}.{reg1}"),
+  ("enl_version", "{!}v{reg4}.{reg5}.{reg6}"),
   ("enl_module", "ENL Admin Module"),
   ("enl_version_check_url", "http://shock.pt/enlversion"),
   
