@@ -1922,6 +1922,8 @@ presentations = [
         (assign, ":cur_y", 1240+3*40), # need space for the 3 extra items in public mode
       (try_end),
       
+      (val_add, ":cur_y", 40), # For the private/public comboboxes
+
       #(assign, ":cur_y", 1240),
       #ENL - End
       (assign, ":cur_y_adder", 40),
@@ -2002,7 +2004,6 @@ presentations = [
       (store_add, ":special_cur_y", ":cur_y", 7),
       (position_set_y, pos1, ":special_cur_y"),
       (overlay_set_position, "$enl_public_mode_checkbox", pos1),
-      (overlay_set_val, "$enl_public_mode_checkbox", "$enl_public_mode"),
       
       (create_text_overlay, reg0, "@Private mode", 0),
       (position_set_x, pos1, 350),
@@ -2013,7 +2014,10 @@ presentations = [
       (position_set_x, pos1, 327),
       (position_set_y, pos1, ":special_cur_y"),
       (overlay_set_position, "$enl_private_mode_checkbox", pos1),
+      
+
       (assign, reg1, "$enl_public_mode"),
+      (overlay_set_val, "$enl_public_mode_checkbox", reg1),
       (val_add, reg1, 1),
       (val_mod, reg1, 2),
       (overlay_set_val, "$enl_private_mode_checkbox", reg1),
