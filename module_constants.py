@@ -1810,7 +1810,7 @@ ACHIEVEMENT_LADY_OF_THE_LAKE = 80,
 #ENL constants
 enl_ver_major = 3
 enl_ver_minor = 1
-enl_ver_patch = 1
+enl_ver_patch = 2
 
 enl_max_teamkills = 3
 enl_button_height = 25

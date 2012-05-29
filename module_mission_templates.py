@@ -14789,6 +14789,23 @@ mission_templates = [
 
          (call_script, "script_multiplayer_server_on_agent_killed_or_wounded_common", ":dead_agent_no", ":killer_agent_no"),
 
+          #ENL - Begin
+          #Restore health, shield, ammo and horse after killing in duel mode
+          (try_begin),
+            (multiplayer_is_server),
+            (ge, ":killer_agent_no", 0),
+            (ge, ":dead_agent_no", 0),
+            (agent_is_human, ":killer_agent_no"), # Not a horse
+            (agent_is_human, ":dead_agent_no"), # Not a horse
+            (agent_set_hit_points, ":killer_agent_no", 100, 0), #100%
+            (agent_refill_ammo, ":killer_agent_no"),
+            (agent_refill_wielded_shield_hit_points, ":killer_agent_no"),
+            (agent_get_horse, ":horse", ":killer_agent_no"),
+            (ge, ":horse", 0),
+            (agent_set_hit_points, ":horse", 100, 0), #100%
+          (try_end),
+          #ENL - End
+
          (try_begin),
            (get_player_agent_no, ":player_agent"),
            (agent_is_active, ":player_agent"),
