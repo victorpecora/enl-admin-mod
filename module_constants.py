@@ -1810,7 +1810,7 @@ ACHIEVEMENT_LADY_OF_THE_LAKE = 80,
 #ENL constants
 enl_ver_major = 3
 enl_ver_minor = 1
-enl_ver_patch = 2
+enl_ver_patch = 3
 
 enl_max_teamkills = 3
 enl_button_height = 25
@@ -1818,3 +1818,16 @@ enl_checkbox_height = 30
 
 #script_game_receive_url_response constants
 response_version = 100
+
+#Player status
+st_disconnected = 0x00
+st_connected    = 0x01
+st_enl_client   = 0x02
+
+#ENL message types
+enl_mt_native    = 0 # default style message
+enl_mt_joinleave = 1 # join and leave messages
+enl_mt_announce  = 2 # server announcements
+enl_mt_adminchat = 3 # admin chat
+enl_mt_setting   = 4 # server settings
+enl_mt_info      = 5 # information
