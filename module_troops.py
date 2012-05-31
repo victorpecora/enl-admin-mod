@@ -2130,7 +2130,7 @@ troops = [
   ["relative_of_merchants_end","relative_of_merchants_end","relative_of_merchants_end",tf_hero, 0,0, fac_commoners,[],def_attrib|level(2),wp(20),knows_inventory_management_10,0],     
   
   ["teamkill_data","{!}teamkill_data","{!}teamkill_data",tf_hero|tf_inactive,0,reserved,fac_neutral,[],def_attrib,0,knows_common,0], #ENL
-  ["connections","{!}connection_data","{!}connection_data",tf_hero|tf_inactive,0,reserved,fac_neutral,[],def_attrib,0,knows_common,0], #ENL
+  ["player_status","{!}player_status","{!}player_status",tf_hero|tf_inactive,0,reserved,fac_neutral,[],def_attrib,0,knows_common,0], #ENL
 ]
 
 

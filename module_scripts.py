@@ -2341,7 +2341,7 @@ scripts = [
          (is_between, reg0, 0, 2),
          (assign, "$enl_public_mode", reg0),
          (str_store_string, s0, "@[SETTING]: Server mode set to {reg0?public:private} by server."),
-         (call_script, "script_enl_broadcast_message_s0", 1),
+         (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
          
          #Update public mode status on all players
          (get_max_players, ":max_players"),
@@ -8014,7 +8014,7 @@ scripts = [
            (neq, ":killer_agent_player_id", ":dead_agent_player_id"),
            (str_store_player_username, s2, ":dead_agent_player_id"),
            (str_store_string, s0, "@{s1} has teamkilled {s2}."),
-           (call_script, "script_enl_broadcast_message_s0", 0),
+           (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
            (str_store_string, s0, "@{s1} has killed a teammate."),
            (server_add_message_to_log, "str_s0"),
          (try_end),
@@ -9177,7 +9177,7 @@ scripts = [
           (else_try),
             (player_set_slot, ":player_no", slot_player_has_limited_class, 1),
             (str_store_string, s0, "@You cannot pick that class."),
-            (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+            (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
             
             (player_set_troop_id, ":player_no", -1),
             (player_set_team_no, ":player_no", ":player_team"),
@@ -9225,8 +9225,8 @@ scripts = [
             
             (call_script, "script_game_get_scene_name", "$g_multiplayer_selected_map"), #goes to s0
             
-            (str_store_string, s0, "@Changing to {s5} on {s0}, {s3} vs {s4}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (str_store_string, s0, "@Changed to {s5} on {s0}, {s3} vs {s4} by {s1}."),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
           (try_end),
           #ENL - End
           (call_script, "script_game_multiplayer_get_game_type_mission_template", "$g_multiplayer_game_type"),
@@ -9247,7 +9247,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Maximum number of players set to {reg0} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9279,7 +9279,7 @@ scripts = [
             (assign, reg1, ":value_2"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Number of bots in {reg0?second:first} team set to {reg1} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9298,7 +9298,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Valve Anti-Cheat {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9317,7 +9317,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow ranged friendly fire {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9336,7 +9336,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow melee friendly fire {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9355,7 +9355,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Friendly fire damage self {reg0?set to {reg0}%:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9374,7 +9374,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Friendly fire damage friend {reg0?set to {reg0}%:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9394,7 +9394,7 @@ scripts = [
             (store_add, ":ghost_mode", ":value", "str_free"),
             (str_store_string, s2, ":ghost_mode"),
             (str_store_string, s0, "@[SETTING]: Spectator camera set to {s2} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
 
           #Update streamer status when ghost mode is changed
@@ -9422,7 +9422,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Control block direction set to {reg0?mouse movement:automatic} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9442,7 +9442,7 @@ scripts = [
             (store_add, ":combat_speed", ":value", "str_combat_speed_0"),
             (str_store_string, s2, ":combat_speed"),
             (str_store_string, s0, "@[SETTING]: Combat speed set to {s2} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9465,7 +9465,7 @@ scripts = [
           (assign, reg0, ":value"),
           (str_store_player_username, s1, ":player_no"),
           (str_store_string, s0, "@[SETTING]: Defender respawn count set to {reg0?{reg0}:unlimited} by {s1}."),
-          (call_script, "script_enl_broadcast_message_s0", 1),
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
         (try_end),
         #ENL - End
       (else_try),
@@ -9482,7 +9482,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Add to official game servers list {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9506,7 +9506,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Respawn period set to {reg0} seconds by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9525,7 +9525,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Map time limit set to {reg0} minutes by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9549,7 +9549,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Round time limit set to {reg0} seconds by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9573,7 +9573,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Switch to bot on death {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9592,7 +9592,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Team point limit set to {reg0} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9611,7 +9611,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Team points gained from flags set to {reg0}% by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9630,7 +9630,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Points gained for capturing flags {reg0?set to {reg0}:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9649,7 +9649,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Starting gold {reg0?set to {reg0}%:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9668,7 +9668,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Combat gold bonus {reg0?set to {reg0}%:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9687,7 +9687,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Round gold bonus {reg0?set to {reg0}%:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9705,7 +9705,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Server name changed to {s0} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9726,7 +9726,7 @@ scripts = [
             (else_try),
               (str_store_string, s0, "@[SETTING]: Password disabled by {s1}."),
             (try_end),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9742,7 +9742,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Welcome message updated by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -9977,7 +9977,7 @@ scripts = [
             (server_add_message_to_log, "str_poll_kick_player_s1_by_s0"),
             #ENL - Begin
             (str_store_string, s0, "str_poll_kick_player_s1_by_s0"),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
             #ENL - End
           (else_try),
             (eq, ":value", 2), #banning a player
@@ -9985,7 +9985,7 @@ scripts = [
             (server_add_message_to_log, "str_poll_ban_player_s1_by_s0"),
             #ENL - Begin
             (str_store_string, s0, "str_poll_ban_player_s1_by_s0"),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
             #ENL - End
           (else_try),
             (eq, ":value", 0), #vote for map
@@ -9995,7 +9995,7 @@ scripts = [
             (server_add_message_to_log, "str_poll_change_map_to_s1_by_s0"),
             #ENL - Begin
             (str_store_string, s0, "str_poll_change_map_to_s1_by_s0"),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
             #ENL - End
           (else_try),
             (eq, ":value", 3), #vote for map and factions
@@ -10007,7 +10007,7 @@ scripts = [
             (server_add_message_to_log, "str_poll_change_map_to_s1_and_factions_to_s2_and_s3_by_s0"),
             #ENL - Begin
             (str_store_string, s0, "str_poll_change_map_to_s1_and_factions_to_s2_and_s3_by_s0"),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
             #ENL - End
           (else_try),
             (eq, ":value", 4), #vote for number of bots
@@ -10016,7 +10016,7 @@ scripts = [
             (server_add_message_to_log, "str_poll_change_number_of_bots_to_reg0_and_reg1_by_s0"),
             #ENL - Begin
             (str_store_string, s0, "str_poll_change_number_of_bots_to_reg0_and_reg1_by_s0"),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
             #ENL - End
           (try_end),
           (assign, "$g_multiplayer_poll_running", 1),
@@ -10083,7 +10083,7 @@ scripts = [
             (str_store_player_username, s1, ":player_no"),
             (str_store_player_username, s2, ":value"),
             (str_store_string, s0, "@{s1} kicked {s2}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
           (try_end),
           #ENL - End
         (try_end),
@@ -10103,7 +10103,7 @@ scripts = [
             (str_store_player_username, s1, ":player_no"),
             (str_store_player_username, s2, ":value"),
             (str_store_string, s0, "@{s1} permanently banned {s2}."),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (try_end),
           #ENL - End
         (try_end),
@@ -10122,7 +10122,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Poll accept threshold set to {reg0}% by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10148,7 +10148,7 @@ scripts = [
             (val_mod, reg0, 1000),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Auto team balance threshold set to {reg0?{reg0}:unlimited} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10173,7 +10173,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Bot count limit for polls {reg0?set to {reg0}:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10197,7 +10197,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow polls to change factions {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10221,7 +10221,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow polls to change maps {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10245,7 +10245,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow polls to kick players {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10269,7 +10269,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow polls to ban players {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10288,7 +10288,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Allow individual banners {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10307,7 +10307,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Force minimum armor {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10371,7 +10371,7 @@ scripts = [
             (assign, reg0, ":value"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Disallow ranged weapons {reg0?enabled:disabled} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
           #ENL - End
         (try_end),
@@ -10383,7 +10383,7 @@ scripts = [
           (player_is_admin, ":player_no"),
           (str_store_player_username, s1, ":player_no"),
           (str_store_string, s0, "@[{s1}]: {s0}"),
-          (call_script, "script_enl_broadcast_message_s0", 1),
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_adminchat),
         (try_end),
       (else_try),
         (eq, ":event_type", multiplayer_event_enl_server_common),
@@ -10401,9 +10401,9 @@ scripts = [
               (try_begin),
                 (eq, "$enl_public_mode", 1),
                 (str_store_string, s0, "@Printing all IDs locally:"),
-                (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+                (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
               (else_try),
-                (call_script, "script_enl_broadcast_message_s0", 1),
+                (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
               (try_end),
               (get_max_players, ":max_players"),
               (try_for_range, ":cur_player", 1, ":max_players"),
@@ -10413,9 +10413,9 @@ scripts = [
                 (str_store_string, s0, "@[ID]: {s0} : {reg0}"),
                 (try_begin),
                   (eq, "$enl_public_mode", 1),
-                  (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+                  (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
                 (else_try),
-                  (call_script, "script_enl_broadcast_message_s0", 1),
+                  (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
                 (try_end),
               (try_end),
             (else_try), #Printing one
@@ -10432,9 +10432,9 @@ scripts = [
                 (eq, "$enl_public_mode", 1),
                 (str_clear, s0),
                 (str_store_string, s0, "@{reg2?Your:{s2}'s} ID: {reg0}"),
-                (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+                (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
               (else_try),
-                (call_script, "script_enl_broadcast_message_s0", 1),
+                (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
               (try_end),
             (try_end),
           (else_try), #Non admin can only print in battle mode
@@ -10442,14 +10442,14 @@ scripts = [
             (try_begin),
               (eq, ":target_player", multiplayer_max_possible_player_id),
               (str_store_string, s0, "@Printing all IDs locally:"),
-              (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+              (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
               (get_max_players, ":max_players"),
               (try_for_range, ":cur_player", 1, ":max_players"),
                 (player_is_active, ":cur_player"),
                 (player_get_unique_id, reg0, ":cur_player"),
                 (str_store_player_username, s0, ":cur_player"),
                 (str_store_string, s0, "@[ID]: {s0} : {reg0}"),
-                (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+                (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
               (try_end),
             (else_try),
               (player_get_unique_id, reg0, ":target_player"),
@@ -10459,7 +10459,7 @@ scripts = [
                 (eq, ":target_player", ":player_no"),
                 (str_store_string, s0, "@Your ID: {reg0}"),
               (try_end),
-              (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+              (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
             (try_end),
           (try_end),
         # (else_try),
@@ -10552,7 +10552,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s0, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Server announcements {reg0?enabled:disabled} by {s0}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_toggle_classlimits),
@@ -10617,7 +10617,7 @@ scripts = [
               (try_end),
             (try_end),
             (str_store_string, s0, "@[SETTING]: {s1} by {s0}"),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_set_classlimits),
@@ -10681,7 +10681,7 @@ scripts = [
               (try_end),
             (try_end),
             (str_store_string, s0, "@[SETTING]: {s1} by {s0}"),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_announcement_interval),
@@ -10707,7 +10707,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s0, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Auto kill stray horses {reg0?enabled:disabled} by {s0}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_toggle_autokickban),
@@ -10723,7 +10723,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s0, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Auto kick/ban {reg0?enabled:disabled} by {s0}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_toggle_streamer),
@@ -10753,7 +10753,7 @@ scripts = [
           (str_store_player_username, s2, ":player_no"),
           
           (str_store_string, s0, "@{s2} {reg0?gave:revoked} streamer status {reg0?to:from} {s1}."),
-          (call_script, "script_enl_broadcast_message_s0", 1),
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
         (else_try),
           (eq, ":event_subtype", enl_event_heal_player),
           (eq, "$enl_public_mode", 1), 
@@ -10774,14 +10774,14 @@ scripts = [
               (eq, reg20, 1),
               (str_store_string, s0, "@{s1} healed 1 player."),
             (try_end),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
             
           (else_try), #1 person
             (call_script, "script_cf_enl_heal_player", ":target_player"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_player_username, s2, ":target_player"),
             (str_store_string, s0, "@{s1} healed {s2}."),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_teleport_player),
@@ -10812,7 +10812,7 @@ scripts = [
             (str_store_player_username, s2, ":player_a"),
             (str_store_player_username, s3, ":player_b"),
             (str_store_string, s0, "@{s1} teleported {s2} to {s3}."),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_swap_player),
@@ -10835,13 +10835,13 @@ scripts = [
               (eq, reg20, 1),
               (str_store_string, s0, "@{s1} {reg21?moved:swapped} 1 player to {reg21?spectator:the other team}."),
             (try_end),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (else_try), #1 person
             (call_script, "script_cf_adminmod_movetospec", ":target_player", reg21),
             (str_store_player_username, s1, ":player_no"),
             (str_store_player_username, s2, ":target_player"),
             (str_store_string, s0, "@{s1} {reg21?moved:swapped} {s2} to {reg21?spectator:the other team}."),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (try_end),
         (else_try),
           (eq, ":event_subtype", enl_event_temporary_ban),
@@ -10853,7 +10853,7 @@ scripts = [
           (str_store_player_username, s1, ":player_no"),
           (str_store_player_username, s2, ":target_player"),
           (str_store_string, s0, "@{s1} temporarily banned {s2}."),
-          (call_script, "script_enl_broadcast_message_s0", 1),
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
         (else_try),
           (eq, ":event_subtype", enl_event_kick_all),
           (player_is_admin, ":player_no"),
@@ -10868,7 +10868,7 @@ scripts = [
           (try_end),
           (gt, reg33, 0),
           (str_store_string, s0, "@{s1} kicked {reg33} players."),
-          (call_script, "script_enl_broadcast_message_s0", 1),
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info),
         (else_try),
           (eq, ":event_subtype", enl_event_set_public_mode),
           (store_script_param, reg0, 4),
@@ -10879,7 +10879,7 @@ scripts = [
             (player_is_active, ":player_no"),
             (str_store_player_username, s1, ":player_no"),
             (str_store_string, s0, "@[SETTING]: Server mode set to {reg0?public:private} by {s1}."),
-            (call_script, "script_enl_broadcast_message_s0", 1),
+            (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_setting),
           (try_end),
 
           #Update public mode status on all players
@@ -10888,6 +10888,9 @@ scripts = [
             (player_is_active, ":cur_player"),
             (multiplayer_send_2_int_to_player, ":cur_player", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"), 
           (try_end),
+        (else_try),
+          (eq, ":event_subtype", enl_event_are_you_enl),
+          (troop_set_slot, "trp_player_status", ":player_no", st_enl_client),
         (try_end), #end sub type
       #ENL - End
       (else_try),
@@ -11407,12 +11410,22 @@ scripts = [
               (is_presentation_active, "prsnt_multiplayer_show_players_list"),
               (assign, "$enl_restart_escape_menu", 1), #to restart escape menu after mode change
             (try_end),
+          (else_try),
+            (eq, ":event_subtype", enl_event_are_you_enl),
+            (multiplayer_send_int_to_server, multiplayer_event_enl_server_common, enl_event_are_you_enl),
+            (assign, "$server_is_enl", 1),
           (try_end),
         (else_try),
           (eq, ":event_type", multiplayer_event_enl_client_update_slot),
           (store_script_param, ":player_no", 3),
           (store_script_param, ":teamkills", 4),
           (player_set_slot, ":player_no", slot_player_teamkills, ":teamkills"),
+        (else_try),
+          (eq, ":event_type", multiplayer_event_enl_message_color),
+          (store_script_param, "$enl_message_color", 3),
+        (else_try),
+          (eq, ":event_type", multiplayer_event_enl_message),
+          (display_message, "str_s0", "$enl_message_color"),
         #ENL - End
         (try_end),
      ]),
@@ -48769,19 +48782,58 @@ scripts = [
   
   #ENL - Begin
   # script_enl_broadcast_message_s0
+  # Input: save to log, message type
+  # Output: none
   ("enl_broadcast_message_s0",[
+    (store_script_param_2, ":type"),
     (get_max_players, ":max_players"),
     (try_for_range, ":cur_player", 0, ":max_players"),
-      (player_is_active, ":cur_player"),
-      (player_get_team_no, ":team_no", ":cur_player"), #dedicated server has -1 for team_no
-      (neq, ":team_no", -1),
-      (multiplayer_send_string_to_player, ":cur_player", multiplayer_event_show_server_message, s0),
+      (call_script, "script_enl_send_message_s0_to_player", ":cur_player", ":type"),
     (try_end),
     
     (try_begin),
       (store_script_param_1, ":log"),
       (eq, ":log", 1),
       (server_add_message_to_log, "str_s0"),
+    (try_end),
+  ]),
+
+  # script_enl_send_message_s0_to_player
+  # Input: player, message_type
+  # Output: none
+  ("enl_send_message_s0_to_player",[
+    (store_script_param_1, ":player"),
+    (store_script_param_2, ":type"),
+    (try_begin),
+      (player_is_active, ":player"),
+      (player_get_team_no, ":team_no", ":player"), #dedicated server has -1 for team_no
+      (neq, ":team_no", -1),
+
+      (try_begin),
+        (this_or_next|eq, ":type", enl_mt_native),
+        (neg|troop_slot_eq, "trp_player_status", ":player", st_enl_client),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_show_server_message, s0),
+      (else_try),
+        (eq, ":type", enl_mt_joinleave),
+        (multiplayer_send_int_to_player, ":player", multiplayer_event_enl_message_color, 0xFF6495ED),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_enl_message, s0),
+      (else_try),
+        (eq, ":type", enl_mt_announce),
+        (multiplayer_send_int_to_player, ":player", multiplayer_event_enl_message_color, 0xFFFCC01E),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_enl_message, s0),
+      (else_try),
+        (eq, ":type", enl_mt_adminchat),
+        (multiplayer_send_int_to_player, ":player", multiplayer_event_enl_message_color, 0xFFFF6666),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_enl_message, s0),
+      (else_try),
+        (eq, ":type", enl_mt_setting),
+        (multiplayer_send_int_to_player, ":player", multiplayer_event_enl_message_color, 0xFF871EFC),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_enl_message, s0),
+      (else_try),
+        (eq, ":type", enl_mt_info),
+        (multiplayer_send_int_to_player, ":player", multiplayer_event_enl_message_color, 0xFFFC7A1E),
+        (multiplayer_send_string_to_player, ":player", multiplayer_event_enl_message, s0),
+      (try_end),
     (try_end),
   ]),
 
@@ -49000,7 +49052,7 @@ scripts = [
     (try_begin),
       (eq, ":result", 1),
       (str_store_string, s0, "@You cannot join a team as a streamer."),
-      (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
+      (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
     (try_end),
     (eq, ":result", 0),
   ]),
@@ -49126,6 +49178,10 @@ scripts = [
     (assign, "$enl_swap_team_or_spec", 0),
     (assign, "$enl_teleport_to_me_or_to_player", 0), 
     (assign, "$enl_ban_permanently_or_temporarily", 0),
+
+    (assign, "$server_is_enl", 0), #Clientside only
+
+    (assign, "$enl_message_color", 0xFFFFFF),
 
   ]),
   

@@ -585,15 +585,15 @@ spf_care_agent_to_agent_distances_less       = 0x00001000,
 
 #ENL
 
-#Events processed at the server
-
+#Events received by the server
 multiplayer_event_admin_message                 = 48 #1 string
 multiplayer_event_enl_server_common             = 49
 
-#Events processed at the client
+#Events received by the client
 multiplayer_event_enl_client_common             = 113
 multiplayer_event_enl_client_update_slot        = 114
-
+multiplayer_event_enl_message_color             = 115
+multiplayer_event_enl_message                   = 116
 
 
 #ENL common event subtype
@@ -612,6 +612,7 @@ enl_event_kick_all                = 11 #S 0
 enl_event_set_public_mode         = 12 #SC 1 value
 enl_event_set_classlimits         = 13 #SC 2 class value
 enl_event_toggle_classlimits      = 14 #SC 2 class value
+enl_event_are_you_enl			  = 15 #SC 0
 
 # Class limits
 enl_class_infantry                = 0

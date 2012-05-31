@@ -60,12 +60,12 @@ enl_player_leave = (
     (store_trigger_param_1, ":player_no"),
     (try_begin),
       #prevent ti_on_player_exit spam
-      (troop_slot_eq, "trp_connections", ":player_no", 1),
-      (troop_set_slot, "trp_connections", ":player_no", 0),
+      (neg|troop_slot_eq, "trp_player_status", ":player_no", st_disconnected),
+      (troop_set_slot, "trp_player_status", ":player_no", st_disconnected),
   
       (str_store_player_username, s1, ":player_no"),
       (str_store_string, s0, "@{s1} has left the game."),
-      (call_script, "script_enl_broadcast_message_s0", 1), 
+      (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_joinleave), 
     (try_end),
   ])
 
@@ -74,42 +74,48 @@ enl_player_join = (
     (store_trigger_param_1, ":player_no"),
     (player_is_active, ":player_no"),
     
-    #prevent ti_on_player_exit spam
-    (troop_slot_eq, "trp_connections", ":player_no", 0),
-    (troop_set_slot, "trp_connections", ":player_no", 1),
+    (try_begin), #Player connected
+      #prevent ti_on_player_exit spam
+      (troop_slot_eq, "trp_player_status", ":player_no", st_disconnected),
+      (troop_set_slot, "trp_player_status", ":player_no", st_connected),
 
-    (player_get_unique_id, ":unique_id", ":player_no"),
-    
-    (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"),
-    
-    #Broadcast message
-    (assign, reg0, ":unique_id"),
-    (str_store_player_username, s1, ":player_no"),
-    (str_clear, s2),
-    (try_begin),
-      (player_is_admin, ":player_no"),
-      (str_store_string, s2, "@ and has administrator rights"),
-    (try_end),
-    (assign, reg1, "$enl_public_mode"),
-    (str_store_string, s0, "@{s1} has joined{reg1?: with ID {reg0}{s2}}."),
-    (call_script, "script_enl_broadcast_message_s0", 0), 
-    
-    
-    (store_current_scene, ":scene"),
-    (call_script, "script_game_get_scene_name", ":scene"),
-    (str_store_string, s0, "@The current map is {s0}. The server is in {reg1?public:private} mode."),
-    (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
-    
-    (call_script, "script_enl_version_to_s0"),
-    (str_store_string, s0, "@This server is using ENL Admin Module {s0}"),
-    (multiplayer_send_string_to_player, ":player_no", multiplayer_event_show_server_message, s0),
-    
-    
-    (get_max_players, ":max_players"),
-    (try_for_range, ":cur_player", 0, ":max_players"),
-      (player_is_active, ":cur_player"),
-      (player_get_slot, ":value", ":cur_player", slot_player_is_streamer),
-      (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_streamer, ":cur_player", ":value"),
+      (multiplayer_send_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_are_you_enl),
+      
+      (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"),
+      
+      #Broadcast message
+      (player_get_unique_id, reg0, ":player_no"),
+      (str_store_player_username, s1, ":player_no"),
+      (str_clear, s2),
+      (try_begin),
+        (player_is_admin, ":player_no"),
+        (str_store_string, s2, "@ and has administrator rights"),
+      (try_end),
+      (assign, reg1, "$enl_public_mode"),
+      (str_store_string, s0, "@{s1} has joined{reg1?: with ID {reg0}{s2}}."),
+      (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_joinleave), 
+      
+      
+      (store_current_scene, ":scene"),
+      (call_script, "script_game_get_scene_name", ":scene"),
+      (str_store_string, s0, "@The current map is {s0}. The server is in {reg1?public:private} mode."),
+      (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
+      
+      
+      (call_script, "script_enl_version_to_s0"),
+      (str_store_string, s0, "@This server is using ENL Admin Module {s0}"),
+      (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
+      
+      
+      (get_max_players, ":max_players"),
+      (try_for_range, ":cur_player", 0, ":max_players"),
+        (player_is_active, ":cur_player"),
+        (player_get_slot, ":value", ":cur_player", slot_player_is_streamer),
+        (multiplayer_send_3_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_toggle_streamer, ":cur_player", ":value"),
+      (try_end),
+
+    (else_try), #Map change
+
     (try_end),
   ])
 
@@ -124,7 +130,7 @@ enl_public_announcement_map = (
     (store_current_scene, ":scene"),
     (call_script, "script_game_get_scene_name", ":scene"),
     (str_store_string, s0, "@The current map is {s0}."),
-    (call_script, "script_enl_broadcast_message_s0", s0),
+    (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
   ])
  
 enl_public_announcements = (
@@ -141,7 +147,7 @@ enl_public_announcements = (
     (store_add, ":current_announcement", "str_enl_announcement_1", "$enl_announcement_current"),
     (str_store_string, s0, ":current_announcement"),
     (str_store_string, s0, "@[ANNOUNCEMENT]: {s0}"),
-    (call_script, "script_enl_broadcast_message_s0", 1),
+    (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_announce),
     
     (val_add, "$enl_announcement_current", 1),
     (val_mod, "$enl_announcement_current", "$enl_announcement_total"),
@@ -243,13 +249,13 @@ enl_public_autokickban = [
           (gt, ":teamkills", enl_max_teamkills),
           (str_store_player_username, s0, ":killer_agent_player_id"),
           (str_store_string, s0, "@{s0} has been temporarily banned for excessive teamkilling."),
-          (call_script, "script_enl_broadcast_message_s0", 1), 
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info), 
           (ban_player, ":killer_agent_player_id", 1),
           (troop_set_slot, "trp_teamkill_data", ":uniqueid", 0),
         (else_try),
           (str_store_player_username, s0, ":killer_agent_player_id"),
           (str_store_string, s0, "@{s0} has been kicked for excessive teamkilling."),
-          (call_script, "script_enl_broadcast_message_s0", 1), 
+          (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info), 
           (kick_player, ":killer_agent_player_id"),
         (try_end),
       (else_try),
@@ -276,7 +282,7 @@ enl_class_limit_notify = (10, 0, 0, [
     (player_is_active, ":cur_player"),
     (player_slot_eq, ":cur_player", slot_player_has_limited_class, 1),
     (str_store_string, s0, "@You cannot pick that class."),
-    (multiplayer_send_string_to_player, ":cur_player", multiplayer_event_show_server_message, s0),
+    (call_script, "script_enl_send_message_s0_to_player", ":cur_player", enl_mt_info),
   (try_end),
 ])
 
