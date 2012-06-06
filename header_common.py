@@ -615,6 +615,7 @@ enl_event_toggle_classlimits      = 14 #SC 2 class value
 enl_event_are_you_enl			  = 15 #SC 0
 
 # Class limits
+enl_class_all					  = -1
 enl_class_infantry                = 0
 enl_class_ranged                  = 1
 enl_class_cavalry                 = 2

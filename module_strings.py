@@ -4126,6 +4126,8 @@ strings +=[
   ("enl_version", "{!}v{reg4}.{reg5}.{reg6}"),
   ("enl_module", "ENL Admin Module"),
   ("enl_version_check_url", "http://shock.pt/enlversion"),
+
+  ("enl_class_limited", "You cannot pick that class."),
   
   ("enl_announcement_1", "Welcome to our server!"),
   ("enl_announcement_2", "Enjoy your stay"),

@@ -9176,7 +9176,7 @@ scripts = [
             #ENL - Begin
           (else_try),
             (player_set_slot, ":player_no", slot_player_has_limited_class, 1),
-            (str_store_string, s0, "@You cannot pick that class."),
+            (str_store_string, s0, "str_enl_class_limited"),
             (call_script, "script_enl_send_message_s0_to_player", ":player_no", enl_mt_info),
             
             (player_set_troop_id, ":player_no", -1),
@@ -9783,8 +9783,8 @@ scripts = [
           (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_return_next_team_faction, 2, "$g_multiplayer_next_team_2_faction"),
           (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_return_num_bots_in_team, 1, "$g_multiplayer_num_bots_team_1"),
           (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_return_num_bots_in_team, 2, "$g_multiplayer_num_bots_team_2"),
-          # (server_get_anti_cheat, ":server_anti_cheat"),
-          # (multiplayer_send_int_to_player, ":player_no", multiplayer_event_return_anti_cheat, ":server_anti_cheat"),
+          (server_get_anti_cheat, ":server_anti_cheat"),
+          (multiplayer_send_int_to_player, ":player_no", multiplayer_event_return_anti_cheat, ":server_anti_cheat"),
           #ENL - Begin
           (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_common, enl_event_set_public_mode, "$enl_public_mode"),
           (try_begin),
@@ -10568,6 +10568,11 @@ scripts = [
             (assign, "$enl_classlimit_ranged_enabled", reg0),
           (else_try),
             (eq, ":type", enl_class_cavalry),
+            (assign, "$enl_classlimit_cavalry_enabled", reg0),
+          (else_try),
+            (eq, ":type", enl_class_all),
+            (assign, "$enl_classlimit_infantry_enabled", reg0),
+            (assign, "$enl_classlimit_ranged_enabled", reg0),
             (assign, "$enl_classlimit_cavalry_enabled", reg0),
           (try_end),
           
@@ -11359,6 +11364,11 @@ scripts = [
               (assign, "$enl_classlimit_ranged_enabled", ":enabled"),
             (else_try),
               (eq, ":type", enl_class_cavalry),
+              (assign, "$enl_classlimit_cavalry_enabled", ":enabled"),
+            (else_try),
+              (eq, ":type", enl_class_all),
+              (assign, "$enl_classlimit_infantry_enabled", ":enabled"),
+              (assign, "$enl_classlimit_ranged_enabled", ":enabled"),
               (assign, "$enl_classlimit_cavalry_enabled", ":enabled"),
             (try_end),
             
@@ -49152,11 +49162,9 @@ scripts = [
   
   # script_enl_init
   ("enl_init", [
-    #Public mode init
-    (server_get_anti_cheat, "$enl_public_mode"),
-    (server_set_anti_cheat, 0),
-  
     #Defaults
+    (assign, "$enl_public_mode", 0),
+
     (assign, "$enl_saved_version_to_log", 0),
     
     (assign, "$enl_announcement_time", 0),
@@ -49181,7 +49189,7 @@ scripts = [
 
     (assign, "$server_is_enl", 0), #Clientside only
 
-    (assign, "$enl_message_color", 0xFFFFFF),
+    (assign, "$enl_message_color", 0xFFFFFFFF),
 
   ]),
   

@@ -1917,7 +1917,12 @@ presentations = [
       #ENL - Begin
       (try_begin),
         (eq, "$enl_public_mode", 0),
-        (assign, ":cur_y", 1240+4*40), # need space for the 4 extra items in private mode
+        (assign, ":cur_y", 1240),
+        (try_begin),
+          (neq, "$g_multiplayer_game_type", multiplayer_game_type_duel),
+          (neq, "$g_multiplayer_game_type", multiplayer_game_type_deathmatch),
+          (val_add, ":cur_y", 4*40), # need space for the 4 extra items in private mode
+        (try_end),
       (else_try),
         (assign, ":cur_y", 1240+3*40), # need space for the 3 extra items in public mode
       (try_end),
@@ -2102,6 +2107,8 @@ presentations = [
       (assign, "$enl_classlimit_cavalry_numberbox", -1),
       (try_begin),
         (eq, "$enl_public_mode", 0),
+        (neq, "$g_multiplayer_game_type", multiplayer_game_type_duel),
+        (neq, "$g_multiplayer_game_type", multiplayer_game_type_deathmatch),
         
         (create_text_overlay, reg0, "@Class limits", 0),
         (position_set_x, pos1, 30+30),
@@ -2915,9 +2922,7 @@ presentations = [
       (try_begin),
       #ENL - Begin
         (eq, ":object", "$enl_class_limits_checkbox"),
-        (val_add, ":value", 1),
-        (val_mod, ":value", 2),
-        (overlay_set_val, "$enl_class_limits_checkbox", ":value"),
+        (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_classlimits, enl_class_all, ":value"),
       (else_try),
         (eq, ":object", "$enl_classlimit_infantry_checkbox"),
         (multiplayer_send_3_int_to_server, multiplayer_event_enl_server_common, enl_event_toggle_classlimits, enl_class_infantry, ":value"),
