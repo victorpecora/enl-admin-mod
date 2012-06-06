@@ -3229,14 +3229,15 @@ str_duel_starts_in_reg0_seconds = 3227
 str_enl_version = 3228
 str_enl_module = 3229
 str_enl_version_check_url = 3230
-str_enl_announcement_1 = 3231
-str_enl_announcement_2 = 3232
-str_enl_announcement_3 = 3233
-str_enl_announcement_4 = 3234
-str_enl_announcement_5 = 3235
-str_enl_announcement_6 = 3236
-str_enl_announcement_7 = 3237
-str_enl_announcement_8 = 3238
-str_enl_announcements_end = 3239
+str_enl_class_limited = 3231
+str_enl_announcement_1 = 3232
+str_enl_announcement_2 = 3233
+str_enl_announcement_3 = 3234
+str_enl_announcement_4 = 3235
+str_enl_announcement_5 = 3236
+str_enl_announcement_6 = 3237
+str_enl_announcement_7 = 3238
+str_enl_announcement_8 = 3239
+str_enl_announcements_end = 3240
 
 

@@ -281,8 +281,12 @@ enl_class_limit_notify = (10, 0, 0, [
   (try_for_range, ":cur_player", 0, ":max_players"),
     (player_is_active, ":cur_player"),
     (player_slot_eq, ":cur_player", slot_player_has_limited_class, 1),
-    (str_store_string, s0, "@You cannot pick that class."),
+    (str_store_string, s0, "str_enl_class_limited"),
     (call_script, "script_enl_send_message_s0_to_player", ":cur_player", enl_mt_info),
+
+    (player_set_troop_id, ":cur_player", -1),
+    #(player_set_team_no, ":player_no", ":player_team"), # What team to put here?
+    (multiplayer_send_message_to_player, ":cur_player", multiplayer_event_force_start_team_selection),
   (try_end),
 ])
 
