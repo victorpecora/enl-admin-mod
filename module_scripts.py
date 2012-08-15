@@ -9034,23 +9034,22 @@ scripts = [
       (val_add, ":local_version", ":local_minor"),
       (val_add, ":local_version", reg6),
 
-      (call_script, "script_enl_version_to_s0"),
+      
+      (str_store_string, s0, "str_enl_version_check"),
+
       (try_begin),
         (eq, ":cur_version", ":local_version"),
-        (assign, "$enl_version_check", 1),
-        (str_store_string, s0, "@{s0}^Your ENL mod is up to date."),
+        (str_store_string, s1, "str_enl_version_current"),
       (else_try),
         (gt, ":cur_version", ":local_version"),
-        (assign, "$enl_version_check", -1),
-        (str_store_string, s0, "@{s0}^An update is available: v{reg1}.{reg2}.{reg3}"),
+        (str_store_string, s1, "str_enl_version_old"),
       (else_try),
-        (assign, "$enl_version_check", 2),
-        (str_store_string, s0, "@{s0}^Error: Your version is from the future."),
+        (str_store_string, s1, "str_enl_version_new"),
       (try_end),
       
-      #(display_message, "str_s0"),
+      (display_message, "@{s1}^{s0}"),
       (multiplayer_is_dedicated_server),
-      (server_add_message_to_log, "str_s0"),
+      (server_add_message_to_log, "@{s1}^{s0}"),
     (try_end),
     #ENL - End
   ]),
@@ -10810,7 +10809,7 @@ scripts = [
               (eq, reg20, 1),
               (str_store_string, s0, "@{s1} teleported 1 player."),
             (try_end),
-            (call_script, "script_enl_broadcast_message_s0", 0),
+            (call_script, "script_enl_broadcast_message_s0", 0, enl_mt_info),
           (else_try), #1 person
             (call_script, "script_cf_enl_teleport_player_to_player", ":player_a", ":player_b"),
             (str_store_player_username, s1, ":player_no"),
@@ -49163,7 +49162,7 @@ scripts = [
   # script_enl_init
   ("enl_init", [
     #Defaults
-    (assign, "$enl_public_mode", 0),
+    (assign, "$enl_public_mode", 1),
 
     (assign, "$enl_saved_version_to_log", 0),
     
@@ -49191,11 +49190,16 @@ scripts = [
 
     (assign, "$enl_message_color", 0xFFFFFFFF),
 
+    (try_begin),
+      (neg|multiplayer_is_dedicated_server),
+      (send_message_to_url, "str_enl_version_check_url"),
+    (try_end),
+
   ]),
   
   # script_enl_version_to_s0
   # Input: none
-  # Output: Saves the string "v{reg0}.{reg1}" to string register 0.
+  # Output: Saves the string "v{reg4}.{reg5}.{reg6}" to string register 0.
   ("enl_version_to_s0", [
     (assign, reg4, enl_ver_major),
     (assign, reg5, enl_ver_minor),
