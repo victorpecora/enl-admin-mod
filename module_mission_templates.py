@@ -290,22 +290,25 @@ enl_class_limit_notify = (10, 0, 0, [
   (try_end),
 ])
 
-enl_version_check = (0, 0, ti_once, [], [
-  #ENL - Begin
- 
-  # Print version to log
-  (multiplayer_is_server), 
-  (eq, "$enl_saved_version_to_log", 0),
-  (assign, "$enl_saved_version_to_log", 1),
 
-  (call_script, "script_enl_version_to_s0"),
-  (str_store_string, s0, "@Running ENL Admin Module {s0}"),
-  (server_add_message_to_log, "str_empty_string"),
-  (server_add_message_to_log, "str_s0"),
-  (server_add_message_to_log, "str_empty_string"),
-  (display_message, "str_s0"),
-  #ENL - End
-])
+enl_version_check = (
+  0, 0, ti_once, [
+    (multiplayer_is_dedicated_server),
+    (eq, "$enl_saved_version_to_log", 0),
+  ], [
+    # Print version to log and console
+    (assign, "$enl_saved_version_to_log", 1),
+
+    (call_script, "script_enl_version_to_s0"),
+    (str_store_string, s1, "str_enl_module"),
+    (str_store_string, s0, "@{s1} {s0}"),
+
+    (server_add_message_to_log, "str_empty_string"),
+    (server_add_message_to_log, "str_s0"),
+    (server_add_message_to_log, "str_empty_string"),
+    (display_message, "str_s0"),
+    (send_message_to_url, "str_enl_version_check_url"),
+  ])
   
 enl_triggers = [enl_admin_chat, enl_player_join, enl_player_leave, enl_public_announcements,
  enl_public_announcement_map, enl_class_limit_notify, enl_version_check]

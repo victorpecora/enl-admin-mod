@@ -4125,7 +4125,11 @@ We apologize sincerely if you contributed your suggestions and feedback but were
 strings +=[
   ("enl_version", "{!}v{reg4}.{reg5}.{reg6}"),
   ("enl_module", "ENL Admin Module"),
-  ("enl_version_check_url", "http://shock.pt/enlversion"),
+  ("enl_version_check_url", "{!}http://shock.pt/enlversion"),
+  ("enl_version_check", "You have v{reg4}.{reg5}.{reg6}. Current is v{reg1}.{reg2}.{reg3}"),
+  ("enl_version_current", "Your ENL mod is up to date."),
+  ("enl_version_old", "An update is available."),
+  ("enl_version_new", "You are running a development version."),
 
   ("enl_class_limited", "You cannot pick that class."),
   
