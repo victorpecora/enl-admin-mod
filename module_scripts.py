@@ -49010,6 +49010,7 @@ scripts = [
     (get_max_players, ":max_players"),
     (multiplayer_get_my_player, ":my_player"),
     (try_for_range, ":cur_player", 0, ":max_players"),
+      (player_is_active, ":cur_player"),
       (neq, ":cur_player", ":my_player"),
       (player_set_is_muted, ":cur_player", ":value"),
     (try_end),
@@ -49170,7 +49171,7 @@ scripts = [
     (assign, "$enl_announcement_interval", 300), #5 minutes
     (assign, "$enl_announcement_current", 0),
     (assign, "$enl_announcement_enabled", 1),
-    (store_sub, "$enl_announcement_total", "str_enl_announcements_end", "str_enl_announcement_1"),
+    (store_sub, "$enl_announcement_total", "str_enl_announcements_end", "str_enl_announcement_01"),
 
     (assign, "$enl_strayhorse_enabled", 0),
     (assign, "$enl_autokickban_enabled", 0),

@@ -3234,14 +3234,14 @@ str_enl_version_current = 3232
 str_enl_version_old = 3233
 str_enl_version_new = 3234
 str_enl_class_limited = 3235
-str_enl_announcement_1 = 3236
-str_enl_announcement_2 = 3237
-str_enl_announcement_3 = 3238
-str_enl_announcement_4 = 3239
-str_enl_announcement_5 = 3240
-str_enl_announcement_6 = 3241
-str_enl_announcement_7 = 3242
-str_enl_announcement_8 = 3243
+str_enl_announcement_01 = 3236
+str_enl_announcement_02 = 3237
+str_enl_announcement_03 = 3238
+str_enl_announcement_04 = 3239
+str_enl_announcement_05 = 3240
+str_enl_announcement_06 = 3241
+str_enl_announcement_07 = 3242
+str_enl_announcement_08 = 3243
 str_enl_announcements_end = 3244
 
 

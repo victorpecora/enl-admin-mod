@@ -4133,14 +4133,14 @@ strings +=[
 
   ("enl_class_limited", "You cannot pick that class."),
   
-  ("enl_announcement_1", "Welcome to our server!"),
-  ("enl_announcement_2", "Enjoy your stay"),
-  ("enl_announcement_3", "Welcome to our server!"),
-  ("enl_announcement_4", "Enjoy your stay"),
-  ("enl_announcement_5", "Welcome to our server!"),
-  ("enl_announcement_6", "Enjoy your stay"),
-  ("enl_announcement_7", "Welcome to our server!"),
-  ("enl_announcement_8", "Enjoy your stay"),
+  ("enl_announcement_01", "Welcome to our server!"),
+  ("enl_announcement_02", "Enjoy your stay"),
+  ("enl_announcement_03", "Welcome to our server!"),
+  ("enl_announcement_04", "Enjoy your stay"),
+  ("enl_announcement_05", "Welcome to our server!"),
+  ("enl_announcement_06", "Enjoy your stay"),
+  ("enl_announcement_07", "Welcome to our server!"),
+  ("enl_announcement_08", "Enjoy your stay"),
   ("enl_announcements_end", "{!}Do not edit this line"),
 ]
 #ENL - End
