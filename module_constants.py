@@ -1806,28 +1806,80 @@ ACHIEVEMENT_EMPRESS = 78,
 ACHIEVEMENT_TALK_OF_THE_TOWN = 79,
 ACHIEVEMENT_LADY_OF_THE_LAKE = 80,
 
+#---------------------------------------------------------------------------------------------------------------------
+# ENL - Constants
+#---------------------------------------------------------------------------------------------------------------------
 
-#ENL constants
 enl_ver_major = 3
-enl_ver_minor = 1
-enl_ver_patch = 5
+enl_ver_minor = 2
+enl_ver_patch = 0
 
+# Max teamkills until player is kicked. Player will be auto banned after enl_max_teamkills * 2
 enl_max_teamkills = 3
+
+# Control heights for prsnt_multiplayer_show_players_list
 enl_button_height = 25
 enl_checkbox_height = 30
 
 #script_game_receive_url_response constants
 response_version = 100
 
-#Player status
+#Player statuses, Used with trp_player_status
 st_disconnected = 0x00
 st_connected    = 0x01
 st_enl_client   = 0x02
 
-#ENL message types
+# Message types, Used for coloured messages
 enl_mt_native    = 0 # default style message
 enl_mt_joinleave = 1 # join and leave messages
 enl_mt_announce  = 2 # server announcements
 enl_mt_adminchat = 3 # admin chat
 enl_mt_setting   = 4 # server settings
 enl_mt_info      = 5 # information
+
+
+#Constants for team kills dummy troop
+teamkill_slot_offset = 1000 #number of possible teamkillers
+
+enl_slot_teamkiller_count = 0 #Stores current number of tracked teamkillers
+enl_slot_teamkiller_first_index = 1 #First of tracked teamkillers' unique ID
+enl_slot_teamkiller_first_data = enl_slot_teamkiller_first_index + teamkill_slot_offset   #First of tracked teamkillers' number of teamkills
+
+#---------------------------------------------------------------------------------------------------------------------
+# ENL - Multiplayer Events
+#---------------------------------------------------------------------------------------------------------------------
+
+#Events received by the server
+multiplayer_event_admin_message                 = 48 #1 string
+multiplayer_event_enl_server_common             = 49
+
+#Events received by the client
+multiplayer_event_enl_client_common             = 113
+multiplayer_event_enl_client_update_slot        = 114
+multiplayer_event_enl_message_color             = 115
+multiplayer_event_enl_message                   = 116
+
+
+#ENL common event subtype              #server/client value_count value_type
+# enl_event_restart_map           =  0 #S  0
+enl_event_print_id                =  1 #S  1 player
+enl_event_toggle_announcements    =  2 #SC 1 value
+enl_event_announcement_interval   =  3 #SC 1 value
+enl_event_toggle_strayhorses      =  4 #SC 1 value
+enl_event_toggle_autokickban      =  5 #SC 1 value
+enl_event_toggle_streamer         =  6 #S  1 player; C 2 player value
+enl_event_heal_player             =  7 #S  1 player
+enl_event_teleport_player         =  8 #S  2 player player
+enl_event_swap_player             =  9 #S  2 player team_or_spec
+enl_event_temporary_ban           = 10 #S  1 player
+enl_event_kick_all                = 11 #S  0
+enl_event_set_public_mode         = 12 #SC 1 value
+enl_event_set_classlimits         = 13 #SC 2 class value
+enl_event_toggle_classlimits      = 14 #SC 2 class value
+enl_event_are_you_enl			  = 15 #SC 0
+
+# Class limits, for use with enl_event_*_classlimits event subtypes
+enl_class_all					  = -1
+enl_class_infantry                =  0
+enl_class_ranged                  =  1
+enl_class_cavalry                 =  2

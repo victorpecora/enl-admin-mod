@@ -144,7 +144,7 @@ enl_public_announcements = (
     (val_mod, "$enl_announcement_time", "$enl_announcement_interval"),
     (eq, "$enl_announcement_time", 0),
     
-    (store_add, ":current_announcement", "str_enl_announcement_1", "$enl_announcement_current"),
+    (store_add, ":current_announcement", "str_enl_announcement_01", "$enl_announcement_current"),
     (str_store_string, s0, ":current_announcement"),
     (str_store_string, s0, "@[ANNOUNCEMENT]: {s0}"),
     (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_announce),
@@ -196,25 +196,62 @@ enl_public_autokickban = [
   (ti_server_player_joined, 0, 0, [],[
     (store_trigger_param_1, ":player_no"),
     (player_get_unique_id, ":uniqueid", ":player_no"),
-    (troop_get_slot, ":teamkills", "trp_teamkill_data", ":uniqueid"),
-    (player_set_slot, ":player_no", slot_player_teamkills, ":teamkills"),
+
+    # Find player in teamkillers list
+    (assign, ":found_slot", -1),
+    (troop_get_slot, ":num_teamkillers", "trp_teamkill_data", enl_slot_teamkiller_count),
+    (store_add, ":end_cond", enl_slot_teamkiller_first_index, ":num_teamkillers"),
+    (try_for_range, ":cur_slot", enl_slot_teamkiller_first_index, ":end_cond"),
+      (troop_slot_eq, "trp_teamkill_data", ":cur_slot", ":uniqueid"),
+      (assign, ":found_slot", ":cur_slot"),
+      (assign, ":end_cond", 0), #break
+    (try_end),
+
+    (try_begin),
+      #Found a match
+      (neq, ":found_slot", -1),
+
+      #Get teamkill count
+      (val_add, ":found_slot", teamkill_slot_offset),
+      (troop_get_slot, ":teamkills", "trp_teamkill_data", ":found_slot"),
+
+      # Send teamkill count to admins
+      (gt, ":teamkills", 0), #Shouldn't happen; precaution
+      (player_set_slot, ":player_no", slot_player_teamkills, ":teamkills"),
+      (call_script, "script_enl_sync_teamkiller_to_all_admins", ":player_no", ":teamkills"),
+    (try_end),
+
+    #If connected player is admin send him everyone's teamkills
     (try_begin),
       (player_is_admin, ":player_no"),
       (get_max_players, ":max_players"),
       (try_for_range, ":cur_player", 0, ":max_players"),
         (player_is_active, ":cur_player"),
-        (player_get_unique_id, ":cur_unique_id", ":cur_player"),
-        (troop_get_slot, ":teamkills", "trp_teamkill_data", ":cur_unique_id"),
-        (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_update_slot, ":cur_player", ":teamkills"),
+        (player_get_slot, ":cur_teamkills", ":cur_player", slot_player_teamkills),
+        (gt, ":cur_teamkills", 0),
+        (multiplayer_send_2_int_to_player, ":player_no", multiplayer_event_enl_client_update_slot, ":cur_player", ":cur_teamkills"),
       (try_end),
     (try_end),
   ]),
   
   #clear slots on map change for now, a better system can be developed later
   (ti_after_mission_start, 0, 0, [(multiplayer_is_server),], [
-    (try_for_range, ":slot", 0, 1500000),
-      (troop_set_slot, "trp_teamkill_data", ":slot", 0),
+    (troop_get_slot, ":num_teamkillers", "trp_teamkill_data", enl_slot_teamkiller_count),
+    
+    # Clear teamkiller ID slots
+    (store_add, ":end_cond", enl_slot_teamkiller_first_index, ":num_teamkillers"),
+    (try_for_range, ":cur_slot", enl_slot_teamkiller_first_index, ":end_cond"),
+      (troop_set_slot, "trp_teamkill_data", ":cur_slot", 0),
     (try_end),
+    
+    # Clear teamkiller teamkill data
+    (val_add, ":end_cond", teamkill_slot_offset),
+    (try_for_range, ":cur_slot", enl_slot_teamkiller_first_data, ":end_cond"),
+      (troop_set_slot, "trp_teamkill_data", ":cur_slot", 0),
+    (try_end),
+    
+    # Reset teamkilled count to zero
+    (troop_set_slot, "trp_teamkill_data", enl_slot_teamkiller_count, 0),
   ]),
 
   (ti_on_agent_killed_or_wounded, 0, 0, [
@@ -238,10 +275,32 @@ enl_public_autokickban = [
       (player_is_active, ":killer_agent_player_id"),
       (player_get_unique_id, ":uniqueid", ":killer_agent_player_id"),
       
-      (troop_get_slot, ":teamkills", "trp_teamkill_data", ":uniqueid"),
+      # Find player in teamkillers list
+      (assign, ":found_slot", -1),
+      (troop_get_slot, ":num_teamkillers", "trp_teamkill_data", enl_slot_teamkiller_count),
+      (store_add, ":end_cond", enl_slot_teamkiller_first_index, ":num_teamkillers"),
+      (try_for_range, ":cur_slot", enl_slot_teamkiller_first_index, ":end_cond"),
+        (troop_slot_eq, "trp_teamkill_data", ":cur_slot", ":uniqueid"),
+        (assign, ":found_slot", ":cur_slot"),
+        (assign, ":end_cond", 0), #break
+      (try_end),
+
+      # If couldn't find him there, add to end
+      (try_begin),
+        (eq, ":found_slot", -1),
+        (store_add, ":found_slot", enl_slot_teamkiller_first_index, ":num_teamkillers"),
+        (troop_set_slot, "trp_teamkill_data", ":found_slot", ":uniqueid"),
+        # And update new teamkiller count
+        (val_add, ":num_teamkillers", 1),
+        (troop_set_slot, "trp_teamkill_data", enl_slot_teamkiller_count, ":num_teamkillers"),
+      (try_end),
+
+      # Increase teamkill count
+      (store_add, ":tk_data_slot", ":found_slot", teamkill_slot_offset),
+      (troop_get_slot, ":teamkills", "trp_teamkill_data", ":tk_data_slot"),
       (val_add, ":teamkills", 1),
-      (troop_set_slot, "trp_teamkill_data", ":uniqueid", ":teamkills"),
-      
+      (troop_set_slot, "trp_teamkill_data", ":tk_data_slot", ":teamkills"),
+  
       (try_begin),
         (store_mod, ":kick_or_ban", ":teamkills", enl_max_teamkills),
         (eq, ":kick_or_ban", 0),
@@ -251,7 +310,30 @@ enl_public_autokickban = [
           (str_store_string, s0, "@{s0} has been temporarily banned for excessive teamkilling."),
           (call_script, "script_enl_broadcast_message_s0", 1, enl_mt_info), 
           (ban_player, ":killer_agent_player_id", 1),
-          (troop_set_slot, "trp_teamkill_data", ":uniqueid", 0),
+          
+          # Remove player from the teamkillers list
+          (store_add, ":last_used_slot", enl_slot_teamkiller_first_index, ":num_teamkillers"),
+          (try_begin),
+            #If player is last one
+            (eq, ":found_slot", ":last_used_slot"),
+            (troop_set_slot, "trp_teamkill_data", ":found_slot", 0),
+            (troop_set_slot, "trp_teamkill_data", ":tk_data_slot", 0),
+          (else_try),
+            # Player isn't last one, swap with last one
+            (troop_get_slot, ":last_tker_id", "trp_teamkill_data", ":last_used_slot"),
+            (troop_set_slot, "trp_teamkill_data", ":last_used_slot", 0),
+            (troop_set_slot, "trp_teamkill_data", ":found_slot", ":last_tker_id"),
+
+            (store_add, ":last_used_slot", teamkill_slot_offset),
+
+            (troop_get_slot, ":last_tker_teamkills", "trp_teamkill_data", ":last_used_slot"),
+            (troop_set_slot, "trp_teamkill_data", ":last_used_slot", 0),
+            (troop_set_slot, "trp_teamkill_data", ":tk_data_slot", ":last_tker_teamkills"),
+          (try_end),
+
+          #Subtract number of teamkillers
+          (val_sub, ":num_teamkillers", 1),
+          (troop_set_slot, "trp_teamkill_data", enl_slot_teamkiller_count, ":num_teamkillers"),
         (else_try),
           (str_store_player_username, s0, ":killer_agent_player_id"),
           (str_store_string, s0, "@{s0} has been kicked for excessive teamkilling."),
